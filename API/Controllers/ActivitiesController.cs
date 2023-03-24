@@ -19,7 +19,7 @@ public class ActivitiesController : ControllerBase
 
     [HttpGet]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(typeof(IEnumerable<Activity>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
     {
         return await _context.Activities.ToListAsync();
@@ -27,7 +27,7 @@ public class ActivitiesController : ControllerBase
 
     [HttpGet("{id:guid}")]
     [Produces(MediaTypeNames.Application.Json)]
-    [ProducesResponseType(typeof(Activity), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<Activity>> GetActivity(Guid id)
     {
