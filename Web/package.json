@@ -7,17 +7,25 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
+    "prettier": "prettier --write ."
   },
+  "browserslist": [
+    "defaults"
+  ],
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^3.0.0-beta.0"
   },
   "devDependencies": {
-    "@types/react": "^18.0.28",
+    "@total-typescript/ts-reset": "^0.4.2",
+    "@types/react": "^18.0.29",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
+    "@vitejs/plugin-legacy": "^4.0.2",
     "@vitejs/plugin-react": "^3.1.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.8.0",
@@ -29,8 +37,9 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "eslint-plugin-unicorn": "^46.0.0",
     "prettier": "^2.8.7",
-    "typescript": "^4.9.3",
-    "vite": "^4.2.0",
+    "terser": "^5.16.8",
+    "typescript": "^5.0.2",
+    "vite": "^4.2.1",
     "vite-plugin-eslint": "^1.8.1"
   }
 }

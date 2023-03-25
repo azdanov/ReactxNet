@@ -1,7 +1,9 @@
 ﻿### Get all activities
-GET https://localhost:44348//api/activities
+GET http://localhost:5240/api/activities
 
-> {% client.global.set("activity_id", response.body[0].id); %}
+> {%
+  client.global.set("activity_id", response.body[0].id);
+%}
 
 ### Get a single activity
-GET https://localhost:44348//api/activities/{{activity_id}}
+GET http://localhost:5240/api/activities/{{activity_id}}

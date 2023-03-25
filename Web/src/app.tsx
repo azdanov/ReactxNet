@@ -1,22 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Header, Image, List } from "semantic-ui-react";
+
+import client from "./api";
+import surfing from "./assets/surfing.png";
+import { Activity } from "./types";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [activities, setActivities] = useState<Activity[]>([]);
+
+  useEffect(() => {
+    client
+      .get<Activity[]>("http://localhost:5240/api/activities")
+      .then((activities) => {
+        setActivities(activities);
+      });
+  }, []);
 
   return (
     <div className="App">
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header as="h1">
+        <Image
+          avatar
+          src={surfing}
+          size="mini"
+          verticalAlign="middle"
+          alt="Surfing"
+          style={{ marginTop: "-0.45rem" }}
+        />
+        ReactxNet
+      </Header>
+      <List>
+        {activities.map((activity) => (
+          <List.Item key={activity.id}>{activity.title}</List.Item>
+        ))}
+      </List>
     </div>
   );
 }
