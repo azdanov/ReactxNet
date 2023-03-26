@@ -1,9 +1,22 @@
 ﻿### Get all activities
-GET http://localhost:5240/api/activities
+GET http://localhost:5000/api/activities
 
 > {%
   client.global.set("activity_id", response.body[0].id);
 %}
 
 ### Get a single activity
-GET http://localhost:5240/api/activities/{{activity_id}}
+GET http://localhost:5000/api/activities/{{activity_id}}
+
+### Create an activity
+POST http://localhost:5000/api/activities
+Content-Type: application/json
+
+{
+  "title": "My new activity",
+  "description": "This is a new activity",
+  "category": "My category",
+  "date": "{{$isoTimestamp}}",
+  "city": "London",
+  "venue": "O2 Arena"
+}

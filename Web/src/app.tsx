@@ -10,7 +10,7 @@ function App() {
 
   useEffect(() => {
     client
-      .get<Activity[]>("http://localhost:5240/api/activities")
+      .get<Activity[]>("http://localhost:5000/api/activities")
       .then((activities) => {
         setActivities(activities);
       });
