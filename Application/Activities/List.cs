@@ -1,5 +1,5 @@
 ﻿using Domain;
-using MediatR;
+using Mediator;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -20,7 +20,7 @@ public class List
             _context = context;
         }
 
-        public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
+        public async ValueTask<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
         {
             return await _context.Activities.ToListAsync(cancellationToken);
         }

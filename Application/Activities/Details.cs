@@ -1,5 +1,5 @@
 ﻿using Domain;
-using MediatR;
+using Mediator;
 using Persistence;
 
 namespace Application.Activities;
@@ -20,7 +20,7 @@ public class Details
             _context = context;
         }
 
-        public async Task<Activity?> Handle(Query request, CancellationToken cancellationToken)
+        public async ValueTask<Activity?> Handle(Query request, CancellationToken cancellationToken)
         {
             return await _context.Activities.FindAsync(new object[] { request.Id }, cancellationToken);
         }

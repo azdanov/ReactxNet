@@ -1,6 +1,7 @@
-using Application;
+using Application.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Persistence.Extensions;
 
 const string corsPolicy = "CorsPolicy";
 
@@ -11,16 +12,14 @@ builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<DataContext>(options =>
-{
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicy,
         policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173"); });
 });
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<IApplicationMarker>());
+
+builder.Services.AddPersistence(builder.Configuration.GetConnectionString("DefaultConnection")!);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 

@@ -1,5 +1,5 @@
 ﻿using Domain;
-using MediatR;
+using Mediator;
 using Persistence;
 
 namespace Application.Activities;
@@ -20,11 +20,13 @@ public class Create
             _context = context;
         }
 
-        public async Task Handle(Command request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(Command request, CancellationToken cancellationToken)
         {
             _context.Activities.Add(request.Activity);
 
             await _context.SaveChangesAsync(cancellationToken);
+
+            return Unit.Value;
         }
     }
 }

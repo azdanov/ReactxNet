@@ -1,7 +1,7 @@
 ﻿using System.Net.Mime;
 using Application.Activities;
 using Domain;
-using MediatR;
+using Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
