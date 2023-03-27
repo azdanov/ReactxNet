@@ -6,11 +6,24 @@
 dotnet watch --project ./API # or dotnet watch --project ./API --no-hot-reload
 ```
 
-## EF Core
+## Notes
 
-Project uses EF Core and SQLite for local development. The database is created in the `API` project, and the migrations are created in the `Persistence` project.
+### Noteworthy NuGet Packages
 
-Migrations are [automatically applied](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=vs#apply-migrations-at-runtime) in development when the API is started.
+- [Mediator](https://github.com/martinothamar/Mediator) - A high performance implementation of Mediator pattern in .NET
+  using source generators. The API and usage is mostly based on the great [MediatR](https://github.com/jbogard/MediatR) library, with some deviations to allow
+  for better performance.
+- [Mapperly](https://github.com/riok/mapperly) - A .NET source generator for generating object mappings. No runtime
+  reflection. Inspired by MapStruct.
+
+### EF Core
+
+Project uses EF Core and SQLite for local development. The database is created in the `API` project, and the migrations
+are created in the `Persistence` project.
+
+Migrations
+are [automatically applied](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=vs#apply-migrations-at-runtime)
+in development when the API is started.
 
 1. Install the EF Core tools: `dotnet tool install --global dotnet-ef`
 
