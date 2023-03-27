@@ -5,7 +5,7 @@ using Persistence;
 
 namespace Application.Activities;
 
-public class Create
+public class Edit
 {
     public class Command : IRequest
     {
@@ -23,8 +23,13 @@ public class Create
 
         public async ValueTask<Unit> Handle(Command request, CancellationToken cancellationToken)
         {
-            var activity = ActivityMapper.MapToActivity(request.Activity);
-            _context.Activities.Add(activity);
+            var activity = await _context.Activities.FindAsync(new object[] { request.Activity.Id }, cancellationToken);
+            if (activity == null)
+            {
+                throw new ArgumentException(nameof(request.Activity.Id));
+            }
+
+            ActivityMapper.ActivityDtoToActivity(request.Activity, activity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

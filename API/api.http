@@ -13,6 +13,7 @@ POST http://localhost:5000/api/activities
 Content-Type: application/json
 
 {
+  "id": "{{$guid}}",
   "title": "My new activity",
   "description": "This is a new activity",
   "category": "My category",
@@ -20,3 +21,24 @@ Content-Type: application/json
   "city": "London",
   "venue": "O2 Arena"
 }
+
+> {%
+  client.global.set("created_activity_id", response.body.id);
+%}
+
+### Update an activity
+PUT http://localhost:5000/api/activities/{{created_activity_id}}
+Content-Type: application/json
+
+{
+  "id": "{{created_activity_id}}",
+  "title": "My updated activity",
+  "description": "This is an updated activity",
+  "category": "My category",
+  "date": "{{$isoTimestamp}}",
+  "city": "London",
+  "venue": "O2 Arena"
+}
+
+### Delete an activity
+DELETE http://localhost:5000/api/activities/{{created_activity_id}}

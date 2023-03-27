@@ -1,15 +1,13 @@
-﻿using Application.Dtos;
-using Application.Mappers;
-using Mediator;
+﻿using Mediator;
 using Persistence;
 
 namespace Application.Activities;
 
-public class Create
+public class Delete
 {
     public class Command : IRequest
     {
-        public required ActivityDto Activity { get; init; }
+        public required Guid Id { get; init; }
     }
 
     public class Handler : IRequestHandler<Command>
@@ -23,8 +21,13 @@ public class Create
 
         public async ValueTask<Unit> Handle(Command request, CancellationToken cancellationToken)
         {
-            var activity = ActivityMapper.MapToActivity(request.Activity);
-            _context.Activities.Add(activity);
+            var activity = await _context.Activities.FindAsync(new object[] { request.Id }, cancellationToken);
+            if (activity == null)
+            {
+                throw new ArgumentException(nameof(request.Id));
+            }
+
+            _context.Activities.Remove(activity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

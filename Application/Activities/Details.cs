@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Application.Dtos;
+using Application.Mappers;
 using Mediator;
 using Persistence;
 
@@ -6,12 +7,12 @@ namespace Application.Activities;
 
 public class Details
 {
-    public class Query : IRequest<Activity?>
+    public class Query : IRequest<ActivityDto?>
     {
-        public Guid Id { get; set; }
+        public required Guid Id { get; init; }
     }
 
-    public class Handler : IRequestHandler<Query, Activity?>
+    public class Handler : IRequestHandler<Query, ActivityDto?>
     {
         private readonly DataContext _context;
 
@@ -20,9 +21,10 @@ public class Details
             _context = context;
         }
 
-        public async ValueTask<Activity?> Handle(Query request, CancellationToken cancellationToken)
+        public async ValueTask<ActivityDto?> Handle(Query request, CancellationToken cancellationToken)
         {
-            return await _context.Activities.FindAsync(new object[] { request.Id }, cancellationToken);
+            var activity = await _context.Activities.FindAsync(new object[] { request.Id }, cancellationToken);
+            return activity == null ? null : ActivityMapper.MapToActivityDto(activity);
         }
     }
 }
