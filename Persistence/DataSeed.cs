@@ -60,7 +60,7 @@ public static class DataSeed
                 Title = "Hike in the Forest",
                 Date = DateTime.UtcNow.AddDays(-2),
                 Description = "Activity 2 days ago",
-                Category = "outdoor",
+                Category = "travel",
                 City = "Otepää",
                 Venue = "Pühajärve Park"
             },

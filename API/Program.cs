@@ -1,3 +1,4 @@
+using API.Converters;
 using Application.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -8,7 +9,8 @@ const string corsPolicy = "CorsPolicy";
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter()); });
 builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

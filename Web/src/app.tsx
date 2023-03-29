@@ -1,40 +1,87 @@
 import { useEffect, useState } from "react";
-import { Header, Image, List } from "semantic-ui-react";
+import { Container } from "semantic-ui-react";
 
 import client from "./api";
-import surfing from "./assets/surfing.png";
-import { Activity } from "./types";
+import ActivityDashboard from "./features/activities/dashboard/activity-dashboard";
+import Navbar from "./layout/navbar";
+import { Activity } from "./models/activity";
 
 function App() {
   const [activities, setActivities] = useState<Activity[]>([]);
+  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(
+    null
+  );
+  const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     client
-      .get<Activity[]>("http://localhost:5000/api/activities")
+      .signal(controller)
+      .get("http://localhost:5000/api/activities")
       .then((activities) => {
-        setActivities(activities);
+        setActivities(activities as Activity[]);
       });
+
+    return () => {
+      controller.abort();
+    };
   }, []);
 
+  function handleSelectActivity(id: string) {
+    setSelectedActivity(activities.find((a) => a.id === id) ?? null);
+  }
+
+  function handleCancelSelectActivity() {
+    setSelectedActivity(null);
+  }
+
+  function handleFormOpen(id?: string) {
+    id ? handleSelectActivity(id) : handleCancelSelectActivity();
+    setEditMode(true);
+  }
+
+  function handleFormClose() {
+    setEditMode(false);
+  }
+
+  function handleCreateOrEditActivity(activity: Activity) {
+    if (activity.id) {
+      setActivities([
+        ...activities.filter((a) => a.id !== activity.id),
+        activity,
+      ]);
+    } else {
+      activity.id = crypto.randomUUID();
+      setActivities([...activities, activity]);
+    }
+    setEditMode(false);
+    setSelectedActivity(activity);
+  }
+
+  function handleDeleteActivity(id: string) {
+    setActivities(activities.filter((a) => a.id !== id));
+    setSelectedActivity(null);
+    setEditMode(false);
+  }
+
   return (
-    <div className="App">
-      <Header as="h1">
-        <Image
-          avatar
-          src={surfing}
-          size="mini"
-          verticalAlign="middle"
-          alt="Surfing"
-          style={{ marginTop: "-0.45rem" }}
+    <>
+      <Navbar openForm={handleFormOpen} />
+      <Container>
+        <ActivityDashboard
+          activities={activities}
+          selectedActivity={selectedActivity}
+          selectActivity={handleSelectActivity}
+          cancelSelectActivity={handleCancelSelectActivity}
+          editMode={editMode}
+          openForm={handleFormOpen}
+          closeForm={handleFormClose}
+          createOrEditActivity={handleCreateOrEditActivity}
+          deleteActivity={handleDeleteActivity}
         />
-        ReactxNet
-      </Header>
-      <List>
-        {activities.map((activity) => (
-          <List.Item key={activity.id}>{activity.title}</List.Item>
-        ))}
-      </List>
-    </div>
+      </Container>
+    </>
   );
 }
 

@@ -1,0 +1,40 @@
+﻿import { Button, Container, Header, Image, Menu } from "semantic-ui-react";
+
+import logo from "../assets/logo.png";
+
+interface Props {
+  openForm: () => void;
+}
+
+function Navbar({ openForm }: Props) {
+  return (
+    <div style={{ paddingTop: 100 }}>
+      <Menu inverted fixed="top" borderless>
+        <Container>
+          <Menu.Item header>
+            <Image
+              rounded
+              src={logo}
+              size="mini"
+              alt="Surfing logo"
+              style={{
+                marginRight: "10px",
+                backgroundImage:
+                  "radial-gradient(circle, #f8fafc 20%, #f8fafc 20%, #4289c1 70%)",
+              }}
+            />
+            <Header inverted as="h1" size="small" style={{ marginTop: 0 }}>
+              ReactxNet
+            </Header>
+          </Menu.Item>
+          <Menu.Item name="Activities" />
+          <Menu.Item>
+            <Button positive content="Create Activity" onClick={openForm} />
+          </Menu.Item>
+        </Container>
+      </Menu>
+    </div>
+  );
+}
+
+export default Navbar;

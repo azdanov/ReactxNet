@@ -12,10 +12,16 @@
     "react": {
       "version": "detect"
     },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
     "import/resolver": {
       "node": {
         "paths": ["src"],
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "typescript": {
+        "alwaysTryTypes": true
       }
     }
   },
@@ -46,6 +52,8 @@
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/no-null": "off",
     "jsx-a11y/anchor-is-valid": [
       "error",
       {
