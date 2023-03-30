@@ -1,4 +1,5 @@
 ﻿import { capitalize } from "lodash-es";
+import { SyntheticEvent, useState } from "react";
 import { Button, Item, Label, Segment } from "semantic-ui-react";
 
 import { Activity } from "../../../models/activity";
@@ -7,9 +8,24 @@ interface Props {
   activities: Activity[];
   selectActivity: (id: string) => void;
   deleteActivity: (id: string) => void;
+  submitting: boolean;
 }
 
-function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
+function ActivityList({
+  activities,
+  selectActivity,
+  deleteActivity,
+  submitting,
+}: Props) {
+  const [target, setTarget] = useState("");
+  function handleActivityDelete(
+    event: SyntheticEvent<HTMLButtonElement>,
+    activityId: string
+  ) {
+    setTarget(event.currentTarget.name);
+    deleteActivity(activityId);
+  }
+
   return (
     <Segment>
       <Item.Group divided>
@@ -27,10 +43,15 @@ function ActivityList({ activities, selectActivity, deleteActivity }: Props) {
               <Item.Extra>
                 <Button.Group floated="right" compact basic>
                   <Button
+                    name={activity.id}
+                    loading={target == activity.id && submitting}
                     content="Delete"
-                    onClick={() => deleteActivity(activity.id)}
+                    onClick={(event) =>
+                      handleActivityDelete(event, activity.id)
+                    }
                   />
                   <Button
+                    disabled={target == activity.id && submitting}
                     content="View"
                     onClick={() => selectActivity(activity.id)}
                   />

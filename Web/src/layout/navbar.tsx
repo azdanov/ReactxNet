@@ -9,7 +9,7 @@ interface Props {
 function Navbar({ openForm }: Props) {
   return (
     <div style={{ paddingTop: 100 }}>
-      <Menu inverted fixed="top" borderless>
+      <Menu borderless inverted fixed="top">
         <Container>
           <Menu.Item header>
             <Image
@@ -29,7 +29,12 @@ function Navbar({ openForm }: Props) {
           </Menu.Item>
           <Menu.Item name="Activities" />
           <Menu.Item>
-            <Button positive content="Create Activity" onClick={openForm} />
+            <Button
+              basic
+              inverted
+              content="Create Activity"
+              onClick={openForm}
+            />
           </Menu.Item>
         </Container>
       </Menu>

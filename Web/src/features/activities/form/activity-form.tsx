@@ -7,12 +7,14 @@ interface Props {
   closeForm: () => void;
   activity: Activity | null;
   createOrEditActivity: (activity: Activity) => void;
+  submitting: boolean;
 }
 
 function ActivityForm({
   closeForm,
   activity: selectedActivity,
   createOrEditActivity,
+  submitting,
 }: Props) {
   const initialFormState = selectedActivity ?? {
     id: "",
@@ -84,12 +86,14 @@ function ActivityForm({
           positive
           type="submit"
           content="Submit"
+          loading={submitting}
         />
         <Button
           floated="right"
           type="button"
           content="Cancel"
           onClick={closeForm}
+          disabled={submitting}
         />
       </Form>
     </Segment>

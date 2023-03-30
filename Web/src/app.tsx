@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Container } from "semantic-ui-react";
 
-import client from "./api";
+import api from "./api";
 import ActivityDashboard from "./features/activities/dashboard/activity-dashboard";
+import Loading from "./layout/loading";
 import Navbar from "./layout/navbar";
 import { Activity } from "./models/activity";
 
@@ -12,16 +13,20 @@ function App() {
     null
   );
   const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
 
-    client
+    api
       .signal(controller)
-      .get("http://localhost:5000/api/activities")
+      .get("/api/activities")
+      .json()
       .then((activities) => {
         setActivities(activities as Activity[]);
-      });
+      })
+      .finally(() => setLoading(false));
 
     return () => {
       controller.abort();
@@ -46,23 +51,54 @@ function App() {
   }
 
   function handleCreateOrEditActivity(activity: Activity) {
+    setSubmitting(true);
+
+    let response: Promise<Activity>;
     if (activity.id) {
-      setActivities([
-        ...activities.filter((a) => a.id !== activity.id),
-        activity,
-      ]);
+      response = api.put(activity, `/api/activities/${activity.id}`).json();
     } else {
       activity.id = crypto.randomUUID();
-      setActivities([...activities, activity]);
+      response = api.post(activity, "/api/activities").json();
     }
-    setEditMode(false);
-    setSelectedActivity(activity);
+
+    response
+      .then((response) => {
+        setActivities((activities) => {
+          const index = activities.findIndex((a) => a.id === activity.id);
+          const activitiesCopy = [...activities];
+          if (index >= 0) {
+            activitiesCopy[index] = response;
+          } else {
+            activitiesCopy.push(response);
+          }
+          return activitiesCopy;
+        });
+      })
+      .finally(() => {
+        setEditMode(false);
+        setSelectedActivity(activity);
+        setSubmitting(false);
+      });
   }
 
   function handleDeleteActivity(id: string) {
-    setActivities(activities.filter((a) => a.id !== id));
-    setSelectedActivity(null);
-    setEditMode(false);
+    setSubmitting(true);
+
+    api
+      .delete(`/api/activities/${id}`)
+      .res()
+      .then(() => {
+        setActivities(activities.filter((a) => a.id !== id));
+      })
+      .finally(() => {
+        setSelectedActivity(null);
+        setEditMode(false);
+        setSubmitting(false);
+      });
+  }
+
+  if (loading) {
+    return <Loading content="Loading activities..." />;
   }
 
   return (
@@ -79,6 +115,7 @@ function App() {
           closeForm={handleFormClose}
           createOrEditActivity={handleCreateOrEditActivity}
           deleteActivity={handleDeleteActivity}
+          submitting={submitting}
         />
       </Container>
     </>
