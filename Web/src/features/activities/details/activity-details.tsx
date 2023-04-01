@@ -1,4 +1,5 @@
-﻿import { Button, Card, Image } from "semantic-ui-react";
+﻿import { observer } from "mobx-react-lite";
+import { Button, Card, Image } from "semantic-ui-react";
 
 import culture from "../../../assets/categories/culture.jpg";
 import drinks from "../../../assets/categories/drinks.jpg";
@@ -6,7 +7,7 @@ import film from "../../../assets/categories/film.jpg";
 import food from "../../../assets/categories/food.jpg";
 import music from "../../../assets/categories/music.jpg";
 import travel from "../../../assets/categories/travel.jpg";
-import { Activity } from "../../../models/activity";
+import { useStore } from "../../../stores";
 
 const categories: {
   [key: string]: string;
@@ -19,31 +20,39 @@ const categories: {
   travel,
 };
 
-interface Props {
-  activity: Activity;
-  cancelSelectActivity: () => void;
-  openForm: (id: string) => void;
-}
+function ActivityDetails() {
+  const { activityStore } = useStore();
 
-function ActivityDetails({ activity, cancelSelectActivity, openForm }: Props) {
+  const selectedActivity = activityStore.selectedActivity;
+
+  if (!selectedActivity) return null;
+  const image = categories[selectedActivity.category];
+
   return (
     <Card fluid>
-      <Image src={categories[activity.category]} wrapped ui={false} />
+      {image && <Image src={image} wrapped ui={false} />}
       <Card.Content>
-        <Card.Header>{activity.title}</Card.Header>
+        <Card.Header>{selectedActivity.title}</Card.Header>
         <Card.Meta>
-          <span>{activity.date}</span>
+          <span>{selectedActivity.date}</span>
         </Card.Meta>
-        <Card.Description>{activity.description}</Card.Description>
+        <Card.Description>{selectedActivity.description}</Card.Description>
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths="2" basic compact>
-          <Button content="Edit" onClick={() => openForm(activity.id)} />
-          <Button content="Cancel" onClick={() => cancelSelectActivity()} />
+          <Button
+            content="Edit"
+            primary
+            onClick={() => activityStore.openForm(selectedActivity.id)}
+          />
+          <Button
+            content="Cancel"
+            onClick={() => activityStore.cancelSelectedActivity()}
+          />
         </Button.Group>
       </Card.Content>
     </Card>
   );
 }
 
-export default ActivityDetails;
+export default observer(ActivityDetails);

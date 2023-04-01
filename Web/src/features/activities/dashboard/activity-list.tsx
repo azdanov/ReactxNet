@@ -1,35 +1,18 @@
 ﻿import { capitalize } from "lodash-es";
+import { observer } from "mobx-react-lite";
 import { SyntheticEvent, useState } from "react";
-import { Button, Item, Label, Segment } from "semantic-ui-react";
+import { Button, Header, Item, Label, Popup, Segment } from "semantic-ui-react";
 
 import { Activity } from "../../../models/activity";
+import { useStore } from "../../../stores";
 
-interface Props {
-  activities: Activity[];
-  selectActivity: (id: string) => void;
-  deleteActivity: (id: string) => void;
-  submitting: boolean;
-}
-
-function ActivityList({
-  activities,
-  selectActivity,
-  deleteActivity,
-  submitting,
-}: Props) {
-  const [target, setTarget] = useState("");
-  function handleActivityDelete(
-    event: SyntheticEvent<HTMLButtonElement>,
-    activityId: string
-  ) {
-    setTarget(event.currentTarget.name);
-    deleteActivity(activityId);
-  }
+function ActivityList() {
+  const { activityStore } = useStore();
 
   return (
     <Segment>
       <Item.Group divided>
-        {activities.map((activity) => (
+        {activityStore.activitiesByDate.map((activity) => (
           <Item key={activity.id}>
             <Item.Content>
               <Item.Header as="a">{activity.title}</Item.Header>
@@ -41,21 +24,7 @@ function ActivityList({
                 </div>
               </Item.Description>
               <Item.Extra>
-                <Button.Group floated="right" compact basic>
-                  <Button
-                    name={activity.id}
-                    loading={target == activity.id && submitting}
-                    content="Delete"
-                    onClick={(event) =>
-                      handleActivityDelete(event, activity.id)
-                    }
-                  />
-                  <Button
-                    disabled={target == activity.id && submitting}
-                    content="View"
-                    onClick={() => selectActivity(activity.id)}
-                  />
-                </Button.Group>
+                <Actions activity={activity} />
                 <Label ribbon basic content={capitalize(activity.category)} />
               </Item.Extra>
             </Item.Content>
@@ -66,4 +35,65 @@ function ActivityList({
   );
 }
 
-export default ActivityList;
+const Actions = observer(function ActivityActions({
+  activity,
+}: {
+  activity: Activity;
+}) {
+  const { activityStore } = useStore();
+
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  function handleActivityDelete(
+    event: SyntheticEvent<HTMLButtonElement>,
+    activityId: string
+  ) {
+    setLoading(true);
+    activityStore.deleteActivity(activityId).finally(() => setLoading(false));
+  }
+
+  return (
+    <Button.Group floated="right" compact basic>
+      <Popup
+        open={open}
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        trigger={
+          <Button data-id={activity.id} loading={loading} content="Delete" />
+        }
+        content={
+          <>
+            <Header>Are you sure you want to delete this activity?</Header>
+            <Button.Group fluid compact>
+              <Button
+                basic
+                negative
+                content="Yes"
+                onClick={(event) => {
+                  setOpen(false);
+                  handleActivityDelete(event, activity.id);
+                }}
+              />
+              <Button
+                basic
+                color="grey"
+                content="No"
+                onClick={() => setOpen(false)}
+              />
+            </Button.Group>
+          </>
+        }
+        on="click"
+        position="top right"
+      />
+      <Button
+        disabled={loading}
+        content="View"
+        onClick={() => activityStore.selectActivity(activity.id)}
+      />
+    </Button.Group>
+  );
+});
+
+export default observer(ActivityList);

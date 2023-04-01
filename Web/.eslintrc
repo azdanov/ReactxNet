@@ -54,6 +54,7 @@
     "import/no-duplicates": "error",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/no-null": "off",
+    "unicorn/no-array-reduce": "off",
     "jsx-a11y/anchor-is-valid": [
       "error",
       {

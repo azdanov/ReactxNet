@@ -1,12 +1,11 @@
 ﻿import { Button, Container, Header, Image, Menu } from "semantic-ui-react";
 
 import logo from "../assets/logo.png";
+import { useStore } from "../stores";
 
-interface Props {
-  openForm: () => void;
-}
+function Navbar() {
+  const { activityStore } = useStore();
 
-function Navbar({ openForm }: Props) {
   return (
     <div style={{ paddingTop: 100 }}>
       <Menu borderless inverted fixed="top">
@@ -33,7 +32,7 @@ function Navbar({ openForm }: Props) {
               basic
               inverted
               content="Create Activity"
-              onClick={openForm}
+              onClick={() => activityStore.openForm()}
             />
           </Menu.Item>
         </Container>
