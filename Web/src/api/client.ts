@@ -4,8 +4,8 @@ import AbortAddon from "wretch/addons/abort";
 import ProgressAddon from "wretch/addons/progress";
 import { delay } from "wretch/middlewares";
 
-const api = wretch()
+const client = wretch()
   .addon(AbortAddon())
   .addon(ProgressAddon())
-  .middlewares([/* Simulate slow network */ delay(random(1000, 3000))]);
-export default api;
+  .middlewares([/* Simulate slow network */ delay(random(300, 1000))]);
+export default client;

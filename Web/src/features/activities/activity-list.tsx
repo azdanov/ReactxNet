@@ -1,10 +1,11 @@
 ﻿import { capitalize } from "lodash-es";
 import { observer } from "mobx-react-lite";
 import { SyntheticEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Header, Item, Label, Popup, Segment } from "semantic-ui-react";
 
-import { Activity } from "../../../models/activity";
-import { useStore } from "../../../stores";
+import { Activity } from "../../models/activity";
+import { useStore } from "../../state/store";
 
 function ActivityList() {
   const { activityStore } = useStore();
@@ -12,24 +13,30 @@ function ActivityList() {
   return (
     <Segment>
       <Item.Group divided>
-        {activityStore.activitiesByDate.map((activity) => (
-          <Item key={activity.id}>
-            <Item.Content>
-              <Item.Header as="a">{activity.title}</Item.Header>
-              <Item.Meta>{activity.date}</Item.Meta>
-              <Item.Description>
-                <div>{activity.description}</div>
-                <div>
-                  {activity.city}, {activity.venue}
-                </div>
-              </Item.Description>
-              <Item.Extra>
-                <Actions activity={activity} />
-                <Label ribbon basic content={capitalize(activity.category)} />
-              </Item.Extra>
-            </Item.Content>
-          </Item>
-        ))}
+        {activityStore.activitiesByDate.length === 0
+          ? "No activities"
+          : activityStore.activitiesByDate.map((activity) => (
+              <Item key={activity.id}>
+                <Item.Content>
+                  <Item.Header as="a">{activity.title}</Item.Header>
+                  <Item.Meta>{activity.date}</Item.Meta>
+                  <Item.Description>
+                    <div>{activity.description}</div>
+                    <div>
+                      {activity.city}, {activity.venue}
+                    </div>
+                  </Item.Description>
+                  <Item.Extra>
+                    <Actions activity={activity} />
+                    <Label
+                      ribbon
+                      basic
+                      content={capitalize(activity.category)}
+                    />
+                  </Item.Extra>
+                </Item.Content>
+              </Item>
+            ))}
       </Item.Group>
     </Segment>
   );
@@ -88,9 +95,10 @@ const Actions = observer(function ActivityActions({
         position="top right"
       />
       <Button
+        as={Link}
+        to={`/activities/${activity.id}`}
         disabled={loading}
         content="View"
-        onClick={() => activityStore.selectActivity(activity.id)}
       />
     </Button.Group>
   );

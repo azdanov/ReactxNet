@@ -52,9 +52,15 @@
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
-    "unicorn/prevent-abbreviations": "off",
-    "unicorn/no-null": "off",
-    "unicorn/no-array-reduce": "off",
+    "unicorn/prevent-abbreviations": [
+      "error",
+      {
+        "allowList": {
+          "Ref": true,
+          "Props": true
+        }
+      }
+    ],
     "jsx-a11y/anchor-is-valid": [
       "error",
       {

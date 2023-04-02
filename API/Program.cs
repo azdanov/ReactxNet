@@ -1,7 +1,5 @@
 using API.Converters;
 using Application.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 using Persistence.Extensions;
 
 const string corsPolicy = "CorsPolicy";
@@ -42,16 +40,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 using var scope = app.Services.CreateScope();
-try
-{
-    var context = scope.ServiceProvider.GetRequiredService<DataContext>();
-    await context.Database.MigrateAsync();
-    await DataSeed.EnsureSeeded(context);
-}
-catch (Exception e)
-{
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    logger.LogError(e, "An error occurred while seeding the database.");
-}
+var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+await scope.UseDatabaseSetup(logger);
 
 app.Run();

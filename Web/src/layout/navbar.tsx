@@ -1,16 +1,14 @@
-﻿import { Button, Container, Header, Image, Menu } from "semantic-ui-react";
+﻿import { NavLink } from "react-router-dom";
+import { Button, Container, Header, Image, Menu } from "semantic-ui-react";
 
-import logo from "../assets/logo.png";
-import { useStore } from "../stores";
+import logo from "../assets/logo-without-background.png";
 
 function Navbar() {
-  const { activityStore } = useStore();
-
   return (
     <div style={{ paddingTop: 100 }}>
       <Menu borderless inverted fixed="top">
         <Container>
-          <Menu.Item header>
+          <Menu.Item as={NavLink} to="/" header>
             <Image
               rounded
               src={logo}
@@ -18,21 +16,20 @@ function Navbar() {
               alt="Surfing logo"
               style={{
                 marginRight: "10px",
-                backgroundImage:
-                  "radial-gradient(circle, #f8fafc 20%, #f8fafc 20%, #4289c1 70%)",
               }}
             />
             <Header inverted as="h1" size="small" style={{ marginTop: 0 }}>
               ReactxNet
             </Header>
           </Menu.Item>
-          <Menu.Item name="Activities" />
+          <Menu.Item as={NavLink} to="/activities" name="Activities" />
           <Menu.Item>
             <Button
+              as={NavLink}
+              to="/activities/create"
               basic
               inverted
               content="Create Activity"
-              onClick={() => activityStore.openForm()}
             />
           </Menu.Item>
         </Container>

@@ -1,13 +1,19 @@
 ﻿import { observer } from "mobx-react-lite";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Segment } from "semantic-ui-react";
 
-import { useStore } from "../../../stores";
+import Loading from "../../layout/loading";
+import { Activity } from "../../models/activity";
+import { useStore } from "../../state/store";
 
 function ActivityForm() {
   const { activityStore } = useStore();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const initialFormState = activityStore.selectedActivity ?? {
+  const [loading, setLoading] = useState(false);
+  const [activity, setActivity] = useState<Activity>({
     id: "",
     title: "",
     category: "",
@@ -15,17 +21,36 @@ function ActivityForm() {
     date: "",
     city: "",
     venue: "",
-  };
+  });
 
-  const [loading, setLoading] = useState(false);
-  const [activity, setActivity] = useState(initialFormState);
+  useEffect(() => {
+    if (id) {
+      activityStore.loadActivity(id).then((activity) => {
+        if (activity) setActivity(activity);
+        else console.error(`Activity not found: ${id}`);
+      });
+    }
+  }, [id, activityStore, setActivity]);
+
+  if (activityStore.loadingInitial)
+    return <Loading content="Loading activity..." />;
 
   function handleSubmit() {
     setLoading(true);
-    (activity.id
-      ? activityStore.updateActivity(activity)
-      : activityStore.createActivity(activity)
-    ).finally(() => setLoading(false));
+
+    let activityPromise: Promise<Activity>;
+    if (activity.id) {
+      activityPromise = activityStore.updateActivity(activity);
+    } else {
+      activity.id = crypto.randomUUID();
+      activityPromise = activityStore.createActivity(activity);
+    }
+
+    activityPromise
+      .then((activity) => {
+        navigate(`/activities/${activity.id}`);
+      })
+      .finally(() => setLoading(false));
   }
 
   function handleInputChange(
@@ -86,11 +111,12 @@ function ActivityForm() {
           loading={loading}
         />
         <Button
+          as={Link}
+          to={id ? `/activities/${id}` : "/activities"}
           basic
           floated="right"
           type="button"
           content="Cancel"
-          onClick={() => activityStore.closeForm()}
           disabled={loading}
         />
       </Form>
