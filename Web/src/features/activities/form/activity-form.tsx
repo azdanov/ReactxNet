@@ -3,9 +3,9 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Segment } from "semantic-ui-react";
 
-import Loading from "../../layout/loading";
-import { Activity } from "../../models/activity";
-import { useStore } from "../../state/store";
+import Loading from "../../../layout/loading";
+import { Activity } from "../../../models/activity";
+import { useStore } from "../../../state/store";
 
 function ActivityForm() {
   const { activityStore } = useStore();

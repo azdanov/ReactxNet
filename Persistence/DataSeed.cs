@@ -22,8 +22,8 @@ public static class DataSeed
             new()
             {
                 Title = "Visit the Opera",
-                Date = DateTime.UtcNow.AddMonths(-1),
-                Description = "Activity 1 months ago",
+                Date = DateTime.UtcNow.AddMonths(-2),
+                Description = "Activity 2 months ago",
                 Category = "culture",
                 City = "Tallinn",
                 Venue = "Estonian National Opera"
@@ -31,8 +31,8 @@ public static class DataSeed
             new()
             {
                 Title = "Attend a Festival",
-                Date = DateTime.UtcNow.AddDays(-21),
-                Description = "Activity 3 weeks ago",
+                Date = DateTime.UtcNow.AddDays(-14),
+                Description = "Activity 2 weeks ago",
                 Category = "music",
                 City = "Pärnu",
                 Venue = "Pärnu Beach Festival"
@@ -85,8 +85,8 @@ public static class DataSeed
             new()
             {
                 Title = "Listen to music",
-                Date = DateTime.UtcNow.AddMonths(1),
-                Description = "Activity 1 months in future",
+                Date = DateTime.UtcNow.AddDays(7),
+                Description = "Activity 1 week in future",
                 Category = "music",
                 City = "Tallinn",
                 Venue = "Unibet Arena"
@@ -94,8 +94,8 @@ public static class DataSeed
             new()
             {
                 Title = "Have a beer",
-                Date = DateTime.UtcNow.AddMonths(2),
-                Description = "Activity 2 months in future",
+                Date = DateTime.UtcNow.AddDays(7),
+                Description = "Activity 1 week in future",
                 Category = "drinks",
                 City = "Tallinn",
                 Venue = "A pub"
@@ -103,8 +103,8 @@ public static class DataSeed
             new()
             {
                 Title = "Enjoy a tapas",
-                Date = DateTime.UtcNow.AddMonths(3),
-                Description = "Activity 3 months in future",
+                Date = DateTime.UtcNow.AddMonths(2),
+                Description = "Activity 2 months in future",
                 Category = "drinks",
                 City = "Tallinn",
                 Venue = "Some bar"
@@ -112,8 +112,8 @@ public static class DataSeed
             new()
             {
                 Title = "Have some food",
-                Date = DateTime.UtcNow.AddMonths(4),
-                Description = "Activity 4 months in future",
+                Date = DateTime.UtcNow.AddMonths(2),
+                Description = "Activity 2 months in future",
                 Category = "food",
                 City = "Tallinn",
                 Venue = "The restobar"

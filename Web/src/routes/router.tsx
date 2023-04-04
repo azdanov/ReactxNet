@@ -1,16 +1,14 @@
 ﻿import { createBrowserRouter } from "react-router-dom";
 
-import ActivityDashboard from "../features/activities/activity-dashboard";
-import ActivityDetails from "../features/activities/activity-details";
-import ActivityForm from "../features/activities/activity-form";
+import ActivityDashboard from "../features/activities/dashboard/activity-dashboard";
+import ActivityDetails from "../features/activities/details/activity-details";
+import ActivityForm from "../features/activities/form/activity-form";
 import HomePage from "../features/home/home-page";
 import App from "../layout/app";
-import AppMin from "../layout/app-min";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppMin />,
     children: [
       {
         path: "",

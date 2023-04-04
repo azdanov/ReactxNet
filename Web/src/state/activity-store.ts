@@ -13,14 +13,23 @@ class ActivityStore {
     makeAutoObservable(this);
   }
 
-  get activitiesEmpty() {
-    return this.activitiesMap.size === 0;
-  }
-
   get activitiesByDate() {
     return [...this.activitiesMap.values()].sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
     );
+  }
+
+  get groupedActivitiesByDate() {
+    const groupedActivities: { [key: string]: Activity[] } = {};
+
+    for (const activity of this.activitiesByDate) {
+      const date = activity.date.split("T")[0];
+      groupedActivities[date] = groupedActivities[date]
+        ? [...groupedActivities[date], activity]
+        : [activity];
+    }
+
+    return Object.entries(groupedActivities);
   }
 
   async loadActivities() {
