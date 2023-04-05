@@ -2,7 +2,7 @@
 
 namespace API.Requests;
 
-public class CreateActivityRequest
+public class EditActivityRequest
 {
     [Required] public Guid? Id { get; init; }
     [Required] public string? Title { get; init; }

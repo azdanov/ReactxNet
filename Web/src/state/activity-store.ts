@@ -4,10 +4,10 @@ import client from "../api/client";
 import { Activity } from "../models/activity";
 
 class ActivityStore {
-  private activitiesMap = new Map<string, Activity>();
   selectedActivity: Activity | undefined;
   loading = false;
   loadingInitial = false;
+  private activitiesMap = new Map<string, Activity>();
 
   constructor() {
     makeAutoObservable(this);
@@ -41,8 +41,6 @@ class ActivityStore {
           this.activitiesMap.set(activity.id, activity);
         }
       });
-    } catch (error) {
-      console.log(error);
     } finally {
       this.setLoadingInitial(false);
     }
@@ -62,8 +60,6 @@ class ActivityStore {
             this.activitiesMap.set(activity.id, activity);
           }
         });
-      } catch (error) {
-        console.log(error);
       } finally {
         this.setLoadingInitial(false);
       }
@@ -79,8 +75,6 @@ class ActivityStore {
         this.activitiesMap.set(activity.id, activity);
         this.selectedActivity = activity;
       });
-    } catch (error) {
-      console.log(error);
     } finally {
       this.setLoading(false);
     }
@@ -97,8 +91,6 @@ class ActivityStore {
         this.activitiesMap.set(activity.id, activity);
         this.selectedActivity = activity;
       });
-    } catch (error) {
-      console.log(error);
     } finally {
       this.setLoading(false);
     }
@@ -113,8 +105,6 @@ class ActivityStore {
         this.activitiesMap.delete(id);
         this.selectedActivity = undefined;
       });
-    } catch (error) {
-      console.log(error);
     } finally {
       this.setLoading(false);
     }
