@@ -28,6 +28,14 @@ pnpm dev # Run the Web UI
 
 ## Notes
 
+### Noteworthy NPM Packages
+
+- [date-fns](https://github.com/date-fns/date-fns) - Modern JavaScript date utility library.
+- [MobX](https://github.com/mobxjs/mobx) - Simple, scalable state management.
+- [Formik](https://github.com/jaredpalmer/formik) - Build forms in React, without the tears.
+- [React Router](https://github.com/remix-run/react-router) - Declarative routing for React.
+- [Semantic UI React](https://github.com/Semantic-Org/Semantic-UI-React) - The official Semantic-UI-React integration.
+
 ### Noteworthy NuGet Packages
 
 - [Mediator](https://github.com/martinothamar/Mediator) - A high performance implementation of Mediator pattern in .NET
