@@ -12,7 +12,7 @@ public sealed class DateTimeJsonConverter : JsonConverter<DateTime>
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {
-        var isoDate = value.ToString("s");
+        var isoDate = value.ToString("u").Replace(' ', 'T');
         writer.WriteStringValue(isoDate);
     }
 }

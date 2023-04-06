@@ -1,4 +1,5 @@
-﻿import { makeAutoObservable, runInAction } from "mobx";
+﻿import { compareAsc, format } from "date-fns";
+import { makeAutoObservable, runInAction } from "mobx";
 
 import client from "../api/client";
 import { Activity } from "../models/activity";
@@ -7,6 +8,14 @@ class ActivityStore {
   selectedActivity: Activity | undefined;
   loading = false;
   loadingInitial = false;
+  readonly categoryOptions = [
+    { key: "drinks", text: "Drinks", value: "drinks" },
+    { key: "culture", text: "Culture", value: "culture" },
+    { key: "film", text: "Film", value: "film" },
+    { key: "food", text: "Food", value: "food" },
+    { key: "music", text: "Music", value: "music" },
+    { key: "travel", text: "Travel", value: "travel" },
+  ];
   private activitiesMap = new Map<string, Activity>();
 
   constructor() {
@@ -14,8 +23,8 @@ class ActivityStore {
   }
 
   get activitiesByDate() {
-    return [...this.activitiesMap.values()].sort(
-      (a, b) => Date.parse(a.date) - Date.parse(b.date)
+    return [...this.activitiesMap.values()].sort((a, b) =>
+      compareAsc(a.date, b.date)
     );
   }
 
@@ -23,7 +32,7 @@ class ActivityStore {
     const groupedActivities: { [key: string]: Activity[] } = {};
 
     for (const activity of this.activitiesByDate) {
-      const date = activity.date.split("T")[0];
+      const date = format(activity.date, "dd MMM yyyy");
       groupedActivities[date] = groupedActivities[date]
         ? [...groupedActivities[date], activity]
         : [activity];
@@ -36,11 +45,9 @@ class ActivityStore {
     this.setLoadingInitial(true);
     try {
       const activities: Activity[] = await client.get("/api/activities").json();
-      runInAction(() => {
-        for (const activity of activities) {
-          this.activitiesMap.set(activity.id, activity);
-        }
-      });
+      for (const activity of activities) {
+        this.setActivity(activity);
+      }
     } finally {
       this.setLoadingInitial(false);
     }
@@ -49,17 +56,15 @@ class ActivityStore {
   async loadActivity(id: string) {
     let activity = this.getActivity(id);
     if (activity) {
-      this.selectedActivity = activity;
+      this.setSelectedActivity(activity);
     } else {
       this.setLoadingInitial(true);
       try {
         activity = await client.get(`/api/activities/${id}`).json();
-        runInAction(() => {
-          if (activity) {
-            this.selectedActivity = activity;
-            this.activitiesMap.set(activity.id, activity);
-          }
-        });
+        if (activity) {
+          this.setActivity(activity);
+          this.setSelectedActivity(activity);
+        }
       } finally {
         this.setLoadingInitial(false);
       }
@@ -70,11 +75,9 @@ class ActivityStore {
   async createActivity(activity: Activity) {
     this.setLoading(true);
     try {
-      activity = await client.post(activity, "/api/activities").json();
-      runInAction(() => {
-        this.activitiesMap.set(activity.id, activity);
-        this.selectedActivity = activity;
-      });
+      await client.post(activity, "/api/activities").res();
+      this.setActivity(activity);
+      this.setSelectedActivity(activity);
     } finally {
       this.setLoading(false);
     }
@@ -84,13 +87,9 @@ class ActivityStore {
   async updateActivity(activity: Activity) {
     this.setLoading(true);
     try {
-      activity = await client
-        .put(activity, `/api/activities/${activity.id}`)
-        .json();
-      runInAction(() => {
-        this.activitiesMap.set(activity.id, activity);
-        this.selectedActivity = activity;
-      });
+      await client.put(activity, `/api/activities/${activity.id}`).res();
+      this.setActivity(activity);
+      this.setSelectedActivity(activity);
     } finally {
       this.setLoading(false);
     }
@@ -116,6 +115,15 @@ class ActivityStore {
 
   setLoading(loading: boolean) {
     this.loading = loading;
+  }
+
+  private setSelectedActivity(activity?: Activity) {
+    this.selectedActivity = activity;
+  }
+
+  private setActivity(activity: Activity) {
+    activity.date = new Date(activity.date);
+    this.activitiesMap.set(activity.id, activity);
   }
 
   private getActivity(id: string) {
