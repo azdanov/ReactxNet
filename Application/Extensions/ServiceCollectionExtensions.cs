@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddMediator(options => { options.ServiceLifetime = ServiceLifetime.Scoped; });
         services.AddValidatorsFromAssemblyContaining<IApplicationMarker>();
+
         return services;
     }
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -15,16 +17,17 @@ public static class ServiceScopeExtensions
         }
         catch (Exception e)
         {
-            logger.LogWarning(e, "An error occurred while migrating the database.");
+            logger.LogWarning(e, "An error occurred while migrating the database");
         }
 
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         try
         {
-            await DataSeed.EnsureSeeded(context);
+            await DataSeed.EnsureSeeded(context, userManager);
         }
         catch (Exception e)
         {
-            logger.LogWarning(e, "An error occurred while seeding the database.");
+            logger.LogWarning(e, "An error occurred while seeding the database");
         }
 
         return scope;

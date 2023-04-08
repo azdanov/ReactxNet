@@ -1,4 +1,5 @@
 using API.Converters;
+using API.Extensions;
 using Application.Extensions;
 using Persistence.Extensions;
 
@@ -18,8 +19,9 @@ builder.Services.AddCors(options =>
         policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173"); });
 });
 
-builder.Services.AddPersistence(builder.Configuration.GetConnectionString("DefaultConnection")!);
+builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();
+builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -36,6 +38,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors(corsPolicy);
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

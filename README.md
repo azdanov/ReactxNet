@@ -65,3 +65,7 @@ in development when the API is started.
 1. Revert the migration: `dotnet ef database update 0 -s API -p Persistence`
 2. Delete the migration: `dotnet ef migrations remove -s API -p Persistence`
 3. Update the database: `dotnet ef database update -s API -p Persistence`
+
+#### EF Core drop database
+
+1. Drop the database: `dotnet ef database drop -s API -p Persistence`
