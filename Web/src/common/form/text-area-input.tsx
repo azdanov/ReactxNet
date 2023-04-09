@@ -1,5 +1,5 @@
 ﻿import { useField } from "formik";
-import { Form, Message } from "semantic-ui-react";
+import { Form, Label } from "semantic-ui-react";
 
 interface Props {
   placeholder: string;
@@ -15,7 +15,13 @@ function TextAreaInput(props: Props) {
       <label>{props.label}</label>
       <textarea {...field} {...props} />
       {meta.touched && meta.error ? (
-        <Message error content={meta.error} />
+        <Label
+          style={{ marginTop: 10 }}
+          basic
+          color="red"
+          pointing
+          content={meta.error}
+        />
       ) : (
         <></>
       )}

@@ -1,6 +1,6 @@
 ﻿import { useField } from "formik";
 import React from "react";
-import { Form, Message, Select } from "semantic-ui-react";
+import { Form, Label, Select } from "semantic-ui-react";
 
 interface Props {
   placeholder: string;
@@ -23,7 +23,13 @@ function SelectInput(props: Props) {
         placeholder={props.placeholder}
       />
       {meta.touched && meta.error ? (
-        <Message error content={meta.error} />
+        <Label
+          style={{ marginTop: 10 }}
+          basic
+          color="red"
+          pointing
+          content={meta.error}
+        />
       ) : (
         <></>
       )}

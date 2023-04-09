@@ -1,16 +1,15 @@
-﻿import { Link } from "react-router-dom";
-import {
-  Button,
-  Container,
-  Header,
-  Icon,
-  Image,
-  Segment,
-} from "semantic-ui-react";
+﻿import { observer } from "mobx-react-lite";
+import { Link } from "react-router-dom";
+import { Button, Container, Header, Image, Segment } from "semantic-ui-react";
 
 import logoImage from "../../assets/logo-without-background.png";
+import { useStore } from "../../stores/store";
+import LoginForm from "../accounts/login-form";
+import RegisterForm from "../accounts/register-form";
 
 function HomePage() {
+  const { userStore, modalStore } = useStore();
+
   return (
     <Segment inverted textAlign="center" vertical className="masthead">
       <Container text>
@@ -18,7 +17,7 @@ function HomePage() {
           <Image
             src={logoImage}
             alt="logo"
-            style={{ marginRight: 15, width: "1.5em" }}
+            style={{ marginRight: 15, height: 96, width: 96 }}
           />
           ReactxNet
         </Header>
@@ -26,18 +25,31 @@ function HomePage() {
           Your friendly activities app
           <Header.Subheader>Have a look around</Header.Subheader>
         </Header>
-        <Button
-          as={Link}
-          to="/activities"
-          style={{ marginTop: 20 }}
-          size="large"
-        >
-          Go to activities!
-          <Icon name="arrow right" />
-        </Button>
+        {userStore.isLoggedIn ? (
+          <Button as={Link} to="/activities" size="large" inverted>
+            Go to activities
+          </Button>
+        ) : (
+          <>
+            <Button
+              onClick={() => modalStore.openModal(<LoginForm />)}
+              size="large"
+              inverted
+            >
+              Login
+            </Button>
+            <Button
+              onClick={() => modalStore.openModal(<RegisterForm />)}
+              size="large"
+              inverted
+            >
+              Register
+            </Button>
+          </>
+        )}
       </Container>
     </Segment>
   );
 }
 
-export default HomePage;
+export default observer(HomePage);

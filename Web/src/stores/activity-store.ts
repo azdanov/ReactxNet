@@ -41,26 +41,34 @@ class ActivityStore {
     return Object.entries(groupedActivities);
   }
 
-  async loadActivities() {
+  async loadActivities(controller: AbortController) {
     this.setLoadingInitial(true);
     try {
-      const activities: Activity[] = await client.get("/api/activities").json();
-      for (const activity of activities) {
-        this.setActivity(activity);
+      const activities: Activity[] = await client
+        .signal(controller)
+        .get("/api/activities")
+        .json();
+      if (activities) {
+        for (const activity of activities) {
+          this.setActivity(activity);
+        }
       }
     } finally {
       this.setLoadingInitial(false);
     }
   }
 
-  async loadActivity(id: string) {
+  async loadActivity(id: string, controller: AbortController) {
     let activity = this.getActivity(id);
     if (activity) {
       this.setSelectedActivity(activity);
     } else {
       this.setLoadingInitial(true);
       try {
-        activity = await client.get(`/api/activities/${id}`).json();
+        activity = await client
+          .signal(controller)
+          .get(`/api/activities/${id}`)
+          .json();
         if (activity) {
           this.setActivity(activity);
           this.setSelectedActivity(activity);
@@ -115,6 +123,10 @@ class ActivityStore {
 
   setLoading(loading: boolean) {
     this.loading = loading;
+  }
+
+  setActivities(activities: Activity[]) {
+    for (const activity of activities) this.setActivity(activity);
   }
 
   private setSelectedActivity(activity?: Activity) {

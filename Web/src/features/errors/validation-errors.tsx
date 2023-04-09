@@ -2,17 +2,16 @@
 import { Message } from "semantic-ui-react";
 
 interface Props {
+  header?: string;
   errors: { [key: string]: string[] };
 }
 
-function ValidationErrors({ errors }: Props) {
+function ValidationErrors({ header, errors }: Props) {
   return Object.keys(errors).length === 0 ? (
     <></>
   ) : (
     <Message error>
-      <Message.Header>
-        There were some errors with your submission
-      </Message.Header>
+      {header && <Message.Header>{header}</Message.Header>}
       <Message.List>
         {Object.entries(errors).map(([error, messages]) => (
           <Fragment key={error}>

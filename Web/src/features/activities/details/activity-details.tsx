@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
 
 import Loading from "../../../layout/loading";
-import { useStore } from "../../../state/store";
+import { useStore } from "../../../stores/store";
 import ActivityDetailsChat from "./activity-details-chat";
 import ActivityDetailsHeader from "./activity-details-header";
 import ActivityDetailsInfo from "./activity-details-info";
@@ -15,9 +15,11 @@ function ActivityDetails() {
   const { id } = useParams();
 
   useEffect(() => {
+    const controller = new AbortController();
     if (id) {
-      activityStore.loadActivity(id).catch(console.error);
+      activityStore.loadActivity(id, controller).catch(console.error);
     }
+    return () => controller.abort();
   }, [activityStore, id]);
 
   if (activityStore.loadingInitial || !activityStore.selectedActivity) {

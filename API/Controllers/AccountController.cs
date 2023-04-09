@@ -48,11 +48,8 @@ public class AccountController : ControllerBase
     {
         if (await _userManager.Users.AnyAsync(x => x.UserName == request.Username))
         {
-            return BadRequest(new[]
-            {
-                new IdentityError
-                    { Code = "DuplicateUsername", Description = $"Username '{request.Username}' is already taken." }
-            });
+            ModelState.AddModelError("DuplicateUserName", $"Username '{request.Username}' is already taken.");
+            return ValidationProblem();
         }
 
         var user = new User
@@ -64,7 +61,15 @@ public class AccountController : ControllerBase
         };
 
         var result = await _userManager.CreateAsync(user, request.Password);
-        if (!result.Succeeded) return BadRequest(result.Errors);
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
+            return ValidationProblem();
+        }
 
         return new UserResponse(user.UserName, user.DisplayName, _tokenService.CreateToken(user), null);
     }
@@ -72,6 +77,7 @@ public class AccountController : ControllerBase
     [HttpGet]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserResponse>> GetCurrentUser()
     {
         var user = await _userManager.FindByEmailAsync(

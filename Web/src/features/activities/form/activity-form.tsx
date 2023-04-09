@@ -3,8 +3,7 @@ import { Form, Formik } from "formik";
 import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Button, Form, Header, Segment } from "semantic-ui-react";
+import { Button, Header, Segment } from "semantic-ui-react";
 import * as yup from "yup";
 
 import DateInput from "../../../common/form/date-input";
@@ -13,7 +12,7 @@ import TextAreaInput from "../../../common/form/text-area-input";
 import TextInput from "../../../common/form/text-input";
 import Loading from "../../../layout/loading";
 import { Activity } from "../../../models/activity";
-import { useStore } from "../../../state/store";
+import { useStore } from "../../../stores/store";
 import ValidationErrors from "../../errors/validation-errors";
 
 const activitySchema = yup.object({
@@ -42,12 +41,14 @@ function ActivityForm() {
   });
 
   useEffect(() => {
+    const controller = new AbortController();
     if (id) {
-      activityStore.loadActivity(id).then((activity) => {
+      activityStore.loadActivity(id, controller).then((activity) => {
         if (activity) setInitialActivity(activity);
         else console.error(`Activity not found: ${id}`);
       });
     }
+    return () => controller.abort();
   }, [id, activityStore, setInitialActivity]);
 
   if (activityStore.loadingInitial)
@@ -62,7 +63,7 @@ function ActivityForm() {
       submitPromise = activityStore.createActivity(activity);
     }
 
-    submitPromise
+    return submitPromise
       .then((activity) => {
         navigate(`/activities/${activity.id}`);
       })
@@ -70,7 +71,6 @@ function ActivityForm() {
         if (error?.json?.errors) {
           setErrors(error.json.errors);
         }
-        toast.error("Failed to save activity");
       });
   }
 
@@ -126,7 +126,7 @@ function ActivityForm() {
                 positive
                 type="submit"
                 content="Submit"
-                disabled={isSubmitting || !dirty || !isValid}
+                disabled={!dirty || !isValid}
                 loading={isSubmitting}
               />
               <Button
@@ -142,7 +142,10 @@ function ActivityForm() {
           )}
         </Formik>
       </Segment>
-      <ValidationErrors errors={errors} />
+      <ValidationErrors
+        header="There were some errors with your submission"
+        errors={errors}
+      />
     </>
   );
 }

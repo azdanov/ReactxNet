@@ -70,7 +70,7 @@ public class ActivitiesController : ControllerBase
         if (!validationResult.IsValid)
         {
             validationResult.AddToModelState(ModelState);
-            return ValidationProblem(ModelState);
+            return ValidationProblem();
         }
 
         var result = await _mediator.Send(createActivityCommand, cancellationToken);
@@ -92,7 +92,7 @@ public class ActivitiesController : ControllerBase
         if (id != request.Id)
         {
             ModelState.AddModelError(nameof(request.Id), "The Id in the route must match the Id in the request body.");
-            return ValidationProblem(ModelState);
+            return ValidationProblem();
         }
 
         var editActivityCommand = ActivityDtoMapper.MapToEditActivityCommand(request);

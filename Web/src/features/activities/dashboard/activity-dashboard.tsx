@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 
 import Loading from "../../../layout/loading";
-import { useStore } from "../../../state/store";
+import { useStore } from "../../../stores/store";
 import ActivityFilters from "./activity-filters";
 import ActivityList from "./activity-list";
 
@@ -11,7 +11,9 @@ function ActivityDashboard() {
   const { activityStore } = useStore();
 
   useEffect(() => {
-    activityStore.loadActivities().catch(console.error);
+    const controller = new AbortController();
+    activityStore.loadActivities(controller).catch(console.error);
+    return () => controller.abort();
   }, [activityStore]);
 
   if (activityStore.loadingInitial) {

@@ -2,7 +2,7 @@
 import { Fragment } from "react";
 import { Header } from "semantic-ui-react";
 
-import { useStore } from "../../../state/store";
+import { useStore } from "../../../stores/store";
 import ActivityListItem from "./activity-list-item";
 
 function ActivityList() {
