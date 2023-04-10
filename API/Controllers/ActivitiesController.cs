@@ -55,11 +55,12 @@ public class ActivitiesController : ControllerBase
         return ActivityDtoMapper.MapToActivityResponse(result.Value);
     }
 
-    [Authorize]
+    [Authorize("IsActivityHost")]
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> CreateActivity([FromBody] CreateActivityRequest request,
         CancellationToken cancellationToken)
@@ -79,11 +80,12 @@ public class ActivitiesController : ControllerBase
         return CreatedAtAction(nameof(GetActivity), new { id = createActivityCommand.Id }, null);
     }
 
-    [Authorize]
+    [Authorize("IsActivityHost")]
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> EditActivity([FromRoute] Guid id,
@@ -111,15 +113,30 @@ public class ActivitiesController : ControllerBase
         return NoContent();
     }
 
-    [Authorize]
+    [Authorize("IsActivityHost")]
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteActivity([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(new DeleteActivityCommand(id), cancellationToken);
+        if (!result.IsSuccess) return NotFound();
+
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPost("{id}/attendances")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> AttendActivity([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new UpdateAttendanceCommand(id), cancellationToken);
         if (!result.IsSuccess) return NotFound();
 
         return NoContent();

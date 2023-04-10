@@ -11,10 +11,6 @@ internal static partial class ActivityDtoMapper
 {
     public static partial ActivityResponse MapToActivityResponse(ActivityDto activity);
 
-    public static partial ActivityResponse MapToActivityResponse(EditActivityCommand activity);
-
-    public static partial ActivityResponse MapToActivityResponse(CreateActivityCommand activity);
-
     public static partial List<ActivityResponse> MapToActivityResponseList(List<ActivityDto> activities);
 
     public static partial CreateActivityCommand MapToCreateActivityCommand(CreateActivityRequest request);

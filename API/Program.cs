@@ -1,7 +1,12 @@
 using API.Converters;
 using API.Extensions;
+using API.Swagger;
 using Application.Extensions;
+using Application.Interfaces;
+using Infrastructure.Security;
+using Microsoft.Extensions.Options;
 using Persistence.Extensions;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 const string corsPolicy = "CorsPolicy";
 
@@ -12,12 +17,15 @@ builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter()); });
 builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicy,
         policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173"); });
 });
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication();

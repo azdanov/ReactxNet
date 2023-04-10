@@ -4,11 +4,11 @@ namespace API.Requests;
 
 public class EditActivityRequest
 {
-    [Required] public Guid? Id { get; init; }
-    [Required] public string? Title { get; init; }
-    [Required] public DateTime? Date { get; init; }
-    [Required] public string? Description { get; init; }
-    [Required] public string? Category { get; init; }
-    [Required] public string? City { get; init; }
-    [Required] public string? Venue { get; init; }
+    [Required] public required Guid Id { get; init; }
+    [Required] public required string Title { get; init; }
+    [Required] public required DateTime Date { get; init; }
+    [Required] public required string Description { get; init; }
+    [Required] public required string Category { get; init; }
+    [Required] public required string City { get; init; }
+    [Required] public required string Venue { get; init; }
 }

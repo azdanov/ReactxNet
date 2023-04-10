@@ -2,10 +2,11 @@
 
 namespace Domain;
 
-public class User : IdentityUser
+public sealed class User : IdentityUser
 {
-    public string DisplayName { get; set; } = default!;
-    public override string UserName { get; set; } = default!;
-    public override string Email { get; set; } = default!;
+    public string DisplayName { get; set; } = null!;
+    public override string UserName { get; set; } = null!;
+    public override string Email { get; set; } = null!;
+    public ICollection<ActivityAttendee> Activities { get; set; } = new List<ActivityAttendee>();
     public string? Bio { get; set; }
 }

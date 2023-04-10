@@ -2,9 +2,10 @@
 
 namespace API.Responses;
 
-public record UserResponse(
-    [Required] string Username,
-    [Required] string DisplayName,
-    [Required] string Token,
-    [Required] string? Image
-);
+public class UserResponse
+{
+    [Required] public required string Username { get; init; }
+    [Required] public required string DisplayName { get; init; }
+    [Required] public required string Token { get; init; }
+    public required string? Image { get; init; }
+}

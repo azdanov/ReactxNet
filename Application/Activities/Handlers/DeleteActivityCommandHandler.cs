@@ -19,7 +19,7 @@ internal class DeleteActivityCommandHandler : ICommandHandler<DeleteActivityComm
         var activity = await _context.Activities.FindAsync(new object[] { request.Id }, cancellationToken);
         if (activity == null) return Result<Unit>.Failure($"Activity with id {request.Id} not found.");
 
-        _context.Activities.Remove(null);
+        _context.Activities.Remove(activity);
         var result = await _context.SaveChangesAsync(cancellationToken);
 
         if (result <= 0)

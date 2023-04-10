@@ -2,7 +2,8 @@
 
 namespace API.Requests;
 
-public record LoginRequest(
-    [Required] [EmailAddress] string Email,
-    [Required] string Password
-);
+public class LoginRequest
+{
+    [Required] public required string Email { get; init; }
+    [Required] public required string Password { get; init; }
+}

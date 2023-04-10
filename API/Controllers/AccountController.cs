@@ -37,7 +37,13 @@ public class AccountController : ControllerBase
         var matches = await _userManager.CheckPasswordAsync(user, request.Password);
         if (!matches) return Unauthorized();
 
-        return new UserResponse(user.UserName, user.DisplayName, _tokenService.CreateToken(user), null);
+        return new UserResponse
+        {
+            Username = user.UserName,
+            DisplayName = user.DisplayName,
+            Token = _tokenService.CreateToken(user),
+            Image = null
+        };
     }
 
     [AllowAnonymous]
@@ -71,7 +77,13 @@ public class AccountController : ControllerBase
             return ValidationProblem();
         }
 
-        return new UserResponse(user.UserName, user.DisplayName, _tokenService.CreateToken(user), null);
+        return new UserResponse
+        {
+            Username = user.UserName,
+            DisplayName = user.DisplayName,
+            Token = _tokenService.CreateToken(user),
+            Image = null
+        };
     }
 
     [HttpGet]
@@ -84,6 +96,12 @@ public class AccountController : ControllerBase
             User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value ?? string.Empty);
         if (user == null) return Unauthorized();
 
-        return new UserResponse(user.UserName, user.DisplayName, _tokenService.CreateToken(user), null);
+        return new UserResponse
+        {
+            Username = user.UserName,
+            DisplayName = user.DisplayName,
+            Token = _tokenService.CreateToken(user),
+            Image = null
+        };
     }
 }

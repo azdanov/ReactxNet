@@ -7,13 +7,15 @@ public static class DataSeed
 {
     public static async Task EnsureSeeded(DataContext context, UserManager<User> userManager)
     {
-        await SeedUsers(userManager);
-        await SeedActivities(context);
+        var users = await SeedUsers(userManager);
+        await SeedActivities(context, users);
+
+        await context.SaveChangesAsync();
     }
 
-    private static async Task SeedUsers(UserManager<User> userManager)
+    private static async Task<List<User>> SeedUsers(UserManager<User> userManager)
     {
-        if (userManager.Users.Any()) return;
+        if (userManager.Users.Any()) return new List<User>();
 
         var users = new List<User>
         {
@@ -44,11 +46,15 @@ public static class DataSeed
         {
             await userManager.CreateAsync(user, "Pa$$w0rd");
         }
+
+        return users;
     }
 
-    private static async Task SeedActivities(DataContext context)
+    private static async Task SeedActivities(DataContext context, List<User> users)
     {
         if (context.Activities.Any()) return;
+
+        if (!users.Any()) users = context.Users.ToList();
 
         var activities = new List<Activity>
         {
@@ -59,7 +65,15 @@ public static class DataSeed
                 Description = "Activity 2 months ago",
                 Category = "culture",
                 City = "Tallinn",
-                Venue = "Estonian National Museum"
+                Venue = "Estonian National Museum",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = true
+                    }
+                }
             },
             new()
             {
@@ -68,7 +82,20 @@ public static class DataSeed
                 Description = "Activity 2 months ago",
                 Category = "culture",
                 City = "Tallinn",
-                Venue = "Estonian National Opera"
+                Venue = "Estonian National Opera",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -77,7 +104,20 @@ public static class DataSeed
                 Description = "Activity 2 weeks ago",
                 Category = "music",
                 City = "Pärnu",
-                Venue = "Pärnu Beach Festival"
+                Venue = "Pärnu Beach Festival",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[2],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -86,7 +126,20 @@ public static class DataSeed
                 Description = "Activity 2 weeks ago",
                 Category = "music",
                 City = "Tartu",
-                Venue = "Vanemuine Concert Hall"
+                Venue = "Vanemuine Concert Hall",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[2],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -95,7 +148,20 @@ public static class DataSeed
                 Description = "Activity 3 days ago",
                 Category = "film",
                 City = "Tallinn",
-                Venue = "Solaris Cinema"
+                Venue = "Solaris Cinema",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -104,7 +170,15 @@ public static class DataSeed
                 Description = "Activity 2 days ago",
                 Category = "travel",
                 City = "Otepää",
-                Venue = "Pühajärve Park"
+                Venue = "Pühajärve Park",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = true
+                    }
+                }
             },
             new()
             {
@@ -113,7 +187,20 @@ public static class DataSeed
                 Description = "Activity 1 day ago",
                 Category = "food",
                 City = "Tartu",
-                Venue = "Polpo"
+                Venue = "Polpo",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -122,7 +209,20 @@ public static class DataSeed
                 Description = "Activity 1 week in future",
                 Category = "culture",
                 City = "Tallinn",
-                Venue = "History Museum"
+                Venue = "History Museum",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[2],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -131,7 +231,20 @@ public static class DataSeed
                 Description = "Activity 1 week in future",
                 Category = "music",
                 City = "Tallinn",
-                Venue = "Unibet Arena"
+                Venue = "Unibet Arena",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[2],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -140,7 +253,20 @@ public static class DataSeed
                 Description = "Activity 1 week in future",
                 Category = "drinks",
                 City = "Tallinn",
-                Venue = "A pub"
+                Venue = "A pub",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[2],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -149,7 +275,20 @@ public static class DataSeed
                 Description = "Activity 2 months in future",
                 Category = "drinks",
                 City = "Tallinn",
-                Venue = "Some bar"
+                Venue = "Some bar",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -158,7 +297,20 @@ public static class DataSeed
                 Description = "Activity 2 months in future",
                 Category = "food",
                 City = "Tallinn",
-                Venue = "The restobar"
+                Venue = "The restobar",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[2],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -167,7 +319,20 @@ public static class DataSeed
                 Description = "Activity 5 months in future",
                 Category = "music",
                 City = "Tallinn",
-                Venue = "Kultuurikatel"
+                Venue = "Kultuurikatel",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -176,7 +341,20 @@ public static class DataSeed
                 Description = "Activity 6 months in future",
                 Category = "travel",
                 City = "Tallinn",
-                Venue = "Somewhere in old town"
+                Venue = "Somewhere in old town",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[2],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             },
             new()
             {
@@ -185,11 +363,23 @@ public static class DataSeed
                 Description = "Activity 7 months in future",
                 Category = "film",
                 City = "Tallinn",
-                Venue = "Cinema"
+                Venue = "Cinema",
+                Attendees = new List<ActivityAttendee>
+                {
+                    new()
+                    {
+                        User = users[0],
+                        IsHost = true
+                    },
+                    new()
+                    {
+                        User = users[1],
+                        IsHost = false
+                    }
+                }
             }
         };
 
         await context.Activities.AddRangeAsync(activities);
-        await context.SaveChangesAsync();
     }
 }

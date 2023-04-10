@@ -20,8 +20,10 @@ internal class GetActivitiesQueryHandler : IQueryHandler<GetActivitiesQuery, Res
     public async ValueTask<Result<List<ActivityDto>>> Handle(GetActivitiesQuery request,
         CancellationToken cancellationToken)
     {
-        var activities = await _context.Activities.ToListAsync(cancellationToken);
+        var activities = await _context.Activities
+            .ProjectToActivityDto()
+            .ToListAsync(cancellationToken);
 
-        return Result<List<ActivityDto>>.Success(ActivityMapper.MapToActivityDtoList(activities));
+        return Result<List<ActivityDto>>.Success(activities);
     }
 }

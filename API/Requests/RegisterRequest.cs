@@ -2,14 +2,11 @@
 
 namespace API.Requests;
 
-public record RegisterRequest(
-    [Required] [EmailAddress] string Email,
-    [Required]
-    [RegularExpression(@"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$",
-        ErrorMessage =
-            "Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter and one number")]
-    string Password,
-    [Required] string DisplayName,
-    [Required] string Username,
-    string? Bio
-);
+public class RegisterRequest
+{
+    [Required] public required string Email { get; init; }
+    [Required] public required string Password { get; init; }
+    [Required] public required string DisplayName { get; init; }
+    [Required] public required string Username { get; init; }
+    [Required] public required string Bio { get; init; }
+}
