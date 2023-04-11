@@ -1,10 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace Infrastructure.Security;
+namespace API.Security;
 
 public class IsHostRequirementHandler : AuthorizationHandler<IsHostRequirement>
 {

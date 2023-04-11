@@ -1,9 +1,9 @@
 using API.Converters;
 using API.Extensions;
+using API.Security;
 using API.Swagger;
 using Application.Extensions;
 using Application.Interfaces;
-using Infrastructure.Security;
 using Microsoft.Extensions.Options;
 using Persistence.Extensions;
 using Swashbuckle.AspNetCore.SwaggerGen;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace Infrastructure.Security;
+namespace API.Security;
 
 public class IsHostRequirement : IAuthorizationRequirement
 {
