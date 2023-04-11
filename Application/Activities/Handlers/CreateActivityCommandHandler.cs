@@ -22,13 +22,13 @@ internal class CreateActivityCommandHandler : ICommandHandler<CreateActivityComm
 
     public async ValueTask<Result<Unit>> Handle(CreateActivityCommand request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetCurrentUsername(),
+        var user = await _context.Users.FirstAsync(x => x.UserName == _userAccessor.GetCurrentUsername(),
             cancellationToken);
 
         var activity = ActivityMapper.MapToActivity(request);
         activity.Attendees.Add(new ActivityAttendee
         {
-            User = user!,
+            User = user,
             Activity = activity,
             IsHost = true
         });

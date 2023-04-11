@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 import { Image, Item, Label, List, Segment } from "semantic-ui-react";
 
 import userImage from "../../../assets/user.png";
+import { Activity } from "../../../models/activity";
 
-function ActivityDetailsSidebar() {
+interface Props {
+  activity: Activity;
+}
+
+function ActivityDetailsSidebar({ activity }: Props) {
   return (
     <>
       <Segment
@@ -15,45 +20,35 @@ function ActivityDetailsSidebar() {
         inverted
         color="blue"
       >
-        3 People Going
+        {activity.attendees.length}{" "}
+        {activity.attendees.length === 1 ? "Person" : "People"} going
       </Segment>
       <Segment attached>
         <List relaxed divided>
-          <Item style={{ position: "relative" }}>
-            <Label
-              style={{ position: "absolute" }}
-              color="orange"
-              ribbon="right"
-            >
-              Host
-            </Label>
-            <Image size="tiny" src={userImage} />
-            <Item.Content verticalAlign="middle">
-              <Item.Header as="h3">
-                <Link to={`#`}>Anton</Link>
-              </Item.Header>
-              <Item.Extra style={{ color: "grey" }}>Following</Item.Extra>
-            </Item.Content>
-          </Item>
-
-          <Item style={{ position: "relative" }}>
-            <Image size="tiny" src={userImage} />
-            <Item.Content verticalAlign="middle">
-              <Item.Header as="h3">
-                <Link to={`#`}>Bran</Link>
-              </Item.Header>
-              <Item.Extra style={{ color: "grey" }}>Following</Item.Extra>
-            </Item.Content>
-          </Item>
-
-          <Item style={{ position: "relative" }}>
-            <Image size="tiny" src={userImage} />
-            <Item.Content verticalAlign="middle">
-              <Item.Header as="h3">
-                <Link to={`#`}>Andy</Link>
-              </Item.Header>
-            </Item.Content>
-          </Item>
+          {activity.attendees.map((attendee) => (
+            <Item key={attendee.username} style={{ position: "relative" }}>
+              {attendee.username === activity.host.username && (
+                <Label
+                  style={{ position: "absolute" }}
+                  color="orange"
+                  ribbon="right"
+                >
+                  Host
+                </Label>
+              )}
+              <Image size="tiny" src={attendee.image || userImage} />
+              <Item.Content verticalAlign="middle">
+                <Item.Header as="h3">
+                  <Link to={`/profiles/${attendee.username}`}>
+                    {attendee.displayName}
+                  </Link>
+                </Item.Header>
+                <Item.Extra style={{ marginTop: "0.1em" }}>
+                  <Label size="tiny" color="orange" content="Following" basic />
+                </Item.Extra>
+              </Item.Content>
+            </Item>
+          ))}
         </List>
       </Segment>
     </>

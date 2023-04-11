@@ -2,7 +2,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
 import client from "../api/client";
-import { Activity } from "../models/activity";
+import { Activity, ActivityFormValues } from "../models/activity";
+import { store } from "./store";
 
 class ActivityStore {
   selectedActivity: Activity | undefined;
@@ -41,88 +42,64 @@ class ActivityStore {
     return Object.entries(groupedActivities);
   }
 
-  async loadActivities(controller: AbortController) {
+  async loadActivities(controller?: AbortController) {
     this.setLoadingInitial(true);
     try {
-      const activities: Activity[] = await client
-        .signal(controller)
+      const activities: Activity[] = await (controller
+        ? client.signal(controller)
+        : client
+      )
         .get("/api/activities")
         .json();
       if (activities) {
-        for (const activity of activities) {
-          this.setActivity(activity);
-        }
+        this.setActivities(activities);
       }
     } finally {
       this.setLoadingInitial(false);
     }
   }
 
-  async loadActivity(id: string, controller: AbortController) {
-    let activity = this.getActivity(id);
-    if (activity) {
-      this.setSelectedActivity(activity);
-    } else {
-      this.setLoadingInitial(true);
-      try {
-        activity = await client
-          .signal(controller)
-          .get(`/api/activities/${id}`)
-          .json();
-        if (activity) {
-          this.setActivity(activity);
-          this.setSelectedActivity(activity);
-        }
-      } finally {
-        this.setLoadingInitial(false);
+  async loadActivity(id: string, controller?: AbortController) {
+    this.setLoadingInitial(true);
+
+    let activity: Activity | undefined;
+    try {
+      activity = await (controller ? client.signal(controller) : client)
+        .get(`/api/activities/${id}`)
+        .json();
+      if (activity) {
+        this.setActivity(activity);
+        this.setSelectedActivity(activity);
       }
+    } finally {
+      this.setLoadingInitial(false);
     }
     return activity;
   }
 
-  async createActivity(activity: Activity) {
-    this.setLoading(true);
-    try {
-      await client.post(activity, "/api/activities").res();
-      this.setActivity(activity);
-      this.setSelectedActivity(activity);
-    } finally {
-      this.setLoading(false);
-    }
-    return activity;
+  async createActivity(activity: ActivityFormValues) {
+    await client.post(activity, "/api/activities").res();
   }
 
-  async updateActivity(activity: Activity) {
-    this.setLoading(true);
-    try {
-      await client.put(activity, `/api/activities/${activity.id}`).res();
-      this.setActivity(activity);
-      this.setSelectedActivity(activity);
-    } finally {
-      this.setLoading(false);
-    }
-    return activity;
+  async updateActivity(activity: ActivityFormValues) {
+    await client.put(activity, `/api/activities/${activity.id}`).res();
   }
 
   async deleteActivity(id: string) {
-    this.setLoading(true);
-    try {
-      await client.delete(`/api/activities/${id}`).res();
-      runInAction(() => {
-        this.activitiesMap.delete(id);
-        this.selectedActivity = undefined;
-      });
-    } finally {
-      this.setLoading(false);
-    }
+    await client.delete(`/api/activities/${id}`).res();
+    runInAction(() => {
+      this.activitiesMap.delete(id);
+      this.selectedActivity = undefined;
+    });
+    await this.loadActivities();
+  }
+
+  async updateAttendance(activityId: string) {
+    await client.post({}, `/api/activities/${activityId}/attendances`).res();
   }
 
   setLoadingInitial(loading: boolean) {
     this.loadingInitial = loading;
-  }
-
-  setLoading(loading: boolean) {
-    this.loading = loading;
   }
 
   setActivities(activities: Activity[]) {
@@ -134,6 +111,16 @@ class ActivityStore {
   }
 
   private setActivity(activity: Activity) {
+    const user = store.userStore.user;
+    if (user) {
+      activity.isGoing = activity.attendees.some(
+        (a) => a.username === user.username
+      );
+      activity.isHost = activity.hostUsername === user.username;
+      activity.host = activity.attendees.find(
+        (a) => a.username === activity.hostUsername
+      )!;
+    }
     activity.date = new Date(activity.date);
     this.activitiesMap.set(activity.id, activity);
   }

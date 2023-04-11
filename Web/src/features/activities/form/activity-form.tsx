@@ -10,8 +10,7 @@ import DateInput from "../../../common/form/date-input";
 import SelectInput from "../../../common/form/select-input";
 import TextAreaInput from "../../../common/form/text-area-input";
 import TextInput from "../../../common/form/text-input";
-import Loading from "../../../layout/loading";
-import { Activity } from "../../../models/activity";
+import { ActivityFormValues } from "../../../models/activity";
 import { useStore } from "../../../stores/store";
 import ValidationErrors from "../../errors/validation-errors";
 
@@ -30,7 +29,7 @@ function ActivityForm() {
   const navigate = useNavigate();
 
   const [errors, setErrors] = useState<{ [key: string]: string[] }>({});
-  const [initialActivity, setInitialActivity] = useState<Activity>({
+  const [initialActivity, setInitialActivity] = useState<ActivityFormValues>({
     id: "",
     title: "",
     description: "",
@@ -51,11 +50,8 @@ function ActivityForm() {
     return () => controller.abort();
   }, [id, activityStore, setInitialActivity]);
 
-  if (activityStore.loadingInitial)
-    return <Loading content="Loading activity..." />;
-
-  function handleSubmit(activity: Activity) {
-    let submitPromise: Promise<Activity>;
+  function handleSubmit(activity: ActivityFormValues) {
+    let submitPromise: Promise<ActivityFormValues>;
     if (activity.id.length > 0) {
       submitPromise = activityStore.updateActivity(activity);
     } else {
@@ -64,8 +60,10 @@ function ActivityForm() {
     }
 
     return submitPromise
+      .then(() => activityStore.loadActivity(activity.id))
       .then((activity) => {
-        navigate(`/activities/${activity.id}`);
+        if (activity) navigate(`/activities/${activity.id}`);
+        else navigate("/activities");
       })
       .catch((error) => {
         if (error?.json?.errors) {
@@ -78,13 +76,13 @@ function ActivityForm() {
     <>
       <Header
         content={
-          initialActivity.id.length > 0
-            ? "Updating activity"
-            : "Creating activity"
+          initialActivity.id.length === 0 && !id
+            ? "Creating activity"
+            : "Updating activity"
         }
         color="blue"
       />
-      <Segment clearing>
+      <Segment clearing loading={activityStore.loadingInitial}>
         <Header content="Activity" sub color="blue" />
         <Formik
           validationSchema={activitySchema}

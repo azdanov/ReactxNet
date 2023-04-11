@@ -1,9 +1,8 @@
 ﻿import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Grid } from "semantic-ui-react";
+import { Grid, Loader } from "semantic-ui-react";
 
-import Loading from "../../../layout/loading";
 import { useStore } from "../../../stores/store";
 import ActivityDetailsChat from "./activity-details-chat";
 import ActivityDetailsHeader from "./activity-details-header";
@@ -22,21 +21,17 @@ function ActivityDetails() {
     return () => controller.abort();
   }, [activityStore, id]);
 
-  if (activityStore.loadingInitial || !activityStore.selectedActivity) {
-    return <Loading content="Loading activity..." />;
-  }
-
-  const activity = activityStore.selectedActivity;
-
-  return (
+  return activityStore.loadingInitial || !activityStore.selectedActivity ? (
+    <Loader active></Loader>
+  ) : (
     <Grid>
       <Grid.Column width={10}>
-        <ActivityDetailsHeader activity={activity} />
-        <ActivityDetailsInfo activity={activity} />
+        <ActivityDetailsHeader activity={activityStore.selectedActivity} />
+        <ActivityDetailsInfo activity={activityStore.selectedActivity} />
         <ActivityDetailsChat />
       </Grid.Column>
       <Grid.Column width={6}>
-        <ActivityDetailsSidebar />
+        <ActivityDetailsSidebar activity={activityStore.selectedActivity} />
       </Grid.Column>
     </Grid>
   );
