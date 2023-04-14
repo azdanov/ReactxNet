@@ -7,7 +7,7 @@ using Riok.Mapperly.Abstractions;
 namespace API.Mappers;
 
 [Mapper]
-internal static partial class ActivityDtoMapper
+internal static partial class ActivityMapper
 {
     public static partial ActivityResponse MapToActivityResponse(ActivityDto activity);
 

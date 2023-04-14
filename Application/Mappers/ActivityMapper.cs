@@ -10,18 +10,6 @@ internal static partial class ActivityMapper
 {
     public static partial void ActivityDtoToActivity(EditActivityCommand activityCommand, Activity activity);
 
-    public static ActivityDto MapToActivityDto(Activity activity)
-    {
-        var activityDto = ActivityToActivityDto(activity);
-        activityDto.HostUsername = activity.Attendees
-            .FirstOrDefault(x => x.IsHost)?.User.UserName;
-
-        return activityDto;
-    }
-
-    [MapperIgnoreTarget(nameof(ActivityDto.HostUsername))]
-    private static partial ActivityDto ActivityToActivityDto(Activity activity);
-
     public static IQueryable<ActivityDto> ProjectToActivityDto(this IQueryable<Activity> activityQuery)
     {
         return activityQuery.Select(activity => new ActivityDto
@@ -34,33 +22,22 @@ internal static partial class ActivityMapper
             Venue = activity.Venue,
             Date = activity.Date,
             IsCancelled = activity.IsCancelled,
-            HostUsername = activity.Attendees
-                .Where(x => x.IsHost)
-                .Select(x => x.User.UserName).FirstOrDefault(),
+            HostUsername = activity.Attendees.FirstOrDefault(x => x.IsHost) == null
+                ? null
+                : activity.Attendees.FirstOrDefault(x => x.IsHost)!.User.UserName,
             Attendees = activity.Attendees.Select(
                 activityAttendee => new AttendeeDto
                 {
                     Username = activityAttendee.User.UserName,
                     DisplayName = activityAttendee.User.DisplayName,
                     Bio = activityAttendee.User.Bio,
-                    Image = null
+                    Image = activityAttendee.User.Photos.FirstOrDefault(x => x.IsMain) == null
+                        ? null
+                        : activityAttendee.User.Photos.FirstOrDefault(x => x.IsMain)!.Url
                 }
             ).ToList()
         });
     }
 
     public static partial Activity MapToActivity(CreateActivityCommand activityCommand);
-
-    public static partial List<ActivityDto> MapToActivityDtoList(List<Activity> activities);
-
-    private static AttendeeDto MapToAttendeeDto(ActivityAttendee activityAttendee)
-    {
-        return new AttendeeDto
-        {
-            Username = activityAttendee.User.UserName,
-            DisplayName = activityAttendee.User.DisplayName,
-            Bio = activityAttendee.User.Bio,
-            Image = null
-        };
-    }
 }

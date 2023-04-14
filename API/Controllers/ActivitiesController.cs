@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/activities")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
 public class ActivitiesController : ControllerBase
@@ -38,7 +38,7 @@ public class ActivitiesController : ControllerBase
     {
         var result = await _mediator.Send(new GetActivitiesQuery(), cancellationToken);
 
-        return ActivityDtoMapper.MapToActivityResponseList(result.Value!);
+        return ActivityMapper.MapToActivityResponseList(result.Value!);
     }
 
     [Authorize]
@@ -52,7 +52,7 @@ public class ActivitiesController : ControllerBase
         var result = await _mediator.Send(new GetActivityQuery(id), cancellationToken);
         if (!result.IsSuccess) return NotFound();
 
-        return ActivityDtoMapper.MapToActivityResponse(result.Value);
+        return ActivityMapper.MapToActivityResponse(result.Value);
     }
 
     [Authorize("IsActivityHost")]
@@ -65,7 +65,7 @@ public class ActivitiesController : ControllerBase
     public async Task<IActionResult> CreateActivity([FromBody] CreateActivityRequest request,
         CancellationToken cancellationToken)
     {
-        var createActivityCommand = ActivityDtoMapper.MapToCreateActivityCommand(request);
+        var createActivityCommand = ActivityMapper.MapToCreateActivityCommand(request);
 
         var validationResult = await _createActivityValidator.ValidateAsync(createActivityCommand, cancellationToken);
         if (!validationResult.IsValid)
@@ -97,7 +97,7 @@ public class ActivitiesController : ControllerBase
             return ValidationProblem();
         }
 
-        var editActivityCommand = ActivityDtoMapper.MapToEditActivityCommand(request);
+        var editActivityCommand = ActivityMapper.MapToEditActivityCommand(request);
 
         var validationResult = await _editActivityValidator.ValidateAsync(editActivityCommand, cancellationToken);
         if (!validationResult.IsValid)

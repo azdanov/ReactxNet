@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-public class ErrorController : ControllerBase
+[Route("api/errors")]
+public class ErrorsController : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("not-found")]

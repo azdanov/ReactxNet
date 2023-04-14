@@ -24,8 +24,8 @@ public static class ServiceCollectionExtensions
             })
             .AddEntityFrameworkStores<DataContext>();
 
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(configuration["TokenKey"] ?? throw new InvalidOperationException()));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            configuration["TOKEN_KEY"] ?? throw new InvalidOperationException()));
 
         services.AddAuthentication(options =>
         {

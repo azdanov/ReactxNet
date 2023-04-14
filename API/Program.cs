@@ -4,9 +4,12 @@ using API.Security;
 using API.Swagger;
 using Application.Extensions;
 using Application.Interfaces;
+using DotNetEnv;
 using Microsoft.Extensions.Options;
 using Persistence.Extensions;
 using Swashbuckle.AspNetCore.SwaggerGen;
+
+Env.Load();
 
 const string corsPolicy = "CorsPolicy";
 
@@ -28,7 +31,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
 builder.Services.AddPersistence(builder.Configuration);
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 builder.Services.AddIdentityServices(builder.Configuration);
 
 var app = builder.Build();

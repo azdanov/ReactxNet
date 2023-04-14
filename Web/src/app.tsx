@@ -16,7 +16,10 @@ function App() {
   useEffect(() => {
     const controller = new AbortController();
     if (userStore.user) {
-      userStore.getUser(controller).finally(() => setLoading(false));
+      userStore
+        .getUser(controller)
+        .catch(() => userStore.logout())
+        .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }

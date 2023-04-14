@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/accounts")]
 [Consumes(MediaTypeNames.Application.Json)]
 [Produces(MediaTypeNames.Application.Json)]
-public class AccountController : ControllerBase
+public class AccountsController : ControllerBase
 {
     private readonly ITokenService _tokenService;
     private readonly UserManager<User> _userManager;
 
-    public AccountController(UserManager<User> userManager, ITokenService tokenService)
+    public AccountsController(UserManager<User> userManager, ITokenService tokenService)
     {
         _userManager = userManager;
         _tokenService = tokenService;
@@ -31,7 +31,9 @@ public class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<UserResponse>> Login([FromBody] LoginRequest request)
     {
-        var user = await _userManager.FindByEmailAsync(request.Email);
+        var user = await _userManager.Users
+            .Include(u => u.Photos)
+            .FirstOrDefaultAsync(u => u.Email == request.Email);
         if (user == null) return Unauthorized();
 
         var matches = await _userManager.CheckPasswordAsync(user, request.Password);
@@ -42,7 +44,7 @@ public class AccountController : ControllerBase
             Username = user.UserName,
             DisplayName = user.DisplayName,
             Token = _tokenService.CreateToken(user),
-            Image = null
+            Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
         };
     }
 
@@ -52,7 +54,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<UserResponse>> Register([FromBody] RegisterRequest request)
     {
-        if (await _userManager.Users.AnyAsync(x => x.UserName == request.Username))
+        if (await _userManager.Users.AnyAsync(u => u.UserName == request.Username))
         {
             ModelState.AddModelError("DuplicateUserName", $"Username '{request.Username}' is already taken.");
             return ValidationProblem();
@@ -81,8 +83,7 @@ public class AccountController : ControllerBase
         {
             Username = user.UserName,
             DisplayName = user.DisplayName,
-            Token = _tokenService.CreateToken(user),
-            Image = null
+            Token = _tokenService.CreateToken(user)
         };
     }
 
@@ -92,8 +93,10 @@ public class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<UserResponse>> GetCurrentUser()
     {
-        var user = await _userManager.FindByEmailAsync(
-            User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value ?? string.Empty);
+        var email = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value ?? string.Empty;
+        var user = await _userManager.Users
+            .Include(u => u.Photos)
+            .FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) return Unauthorized();
 
         return new UserResponse
@@ -101,7 +104,7 @@ public class AccountController : ControllerBase
             Username = user.UserName,
             DisplayName = user.DisplayName,
             Token = _tokenService.CreateToken(user),
-            Image = null
+            Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
         };
     }
 }

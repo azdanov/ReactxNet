@@ -95,7 +95,9 @@ class ActivityStore {
   }
 
   async updateAttendance(activityId: string) {
-    await client.post({}, `/api/activities/${activityId}/attendances`).res();
+    await client
+      .post({}, `/api/activities/${activityId}/attend-activity`)
+      .res();
   }
 
   setLoadingInitial(loading: boolean) {

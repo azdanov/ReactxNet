@@ -20,8 +20,9 @@ internal class GetActivityQueryHandler : IQueryHandler<GetActivityQuery, Result<
     public async ValueTask<Result<ActivityDto>> Handle(GetActivityQuery request, CancellationToken cancellationToken)
     {
         var activity = await _context.Activities
+            .Where(a => a.Id == request.Id)
             .ProjectToActivityDto()
-            .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
 
         return activity is null
             ? Result<ActivityDto>.Failure("Activity not found.")

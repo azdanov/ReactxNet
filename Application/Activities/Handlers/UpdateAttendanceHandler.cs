@@ -24,7 +24,8 @@ public class UpdateAttendanceHandler : ICommandHandler<UpdateAttendanceCommand, 
         var activity = await _context.Activities
             .Include(a => a.Attendees)
             .ThenInclude(aa => aa.User)
-            .SingleOrDefaultAsync(a => a.Id == request.Id, cancellationToken);
+            .Where(a => a.Id == request.Id)
+            .FirstOrDefaultAsync(cancellationToken);
         if (activity == null) return Result<Unit>.Failure("Activity not found");
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == _userAccessor.GetCurrentUsername(),

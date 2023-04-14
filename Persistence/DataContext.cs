@@ -12,6 +12,7 @@ public class DataContext : IdentityDbContext<User>
 
     public DbSet<Activity> Activities => Set<Activity>();
     public DbSet<ActivityAttendee> ActivityAttendees => Set<ActivityAttendee>();
+    public DbSet<Photo> Photos => Set<Photo>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -31,7 +31,7 @@ class UserStore {
 
   async login({ email, password }: UserLogin) {
     const user: User = await client
-      .post({ email, password }, "/api/account/login")
+      .post({ email, password }, "/api/accounts/login")
       .json();
 
     if (user) {
@@ -48,7 +48,7 @@ class UserStore {
           username,
           displayName,
         },
-        "/api/account/register"
+        "/api/accounts/register"
       )
       .json();
 
@@ -60,7 +60,7 @@ class UserStore {
   async getUser(controller: AbortController) {
     const user: User = await client
       .signal(controller)
-      .get("/api/account")
+      .get("/api/accounts")
       .json();
 
     if (user) {

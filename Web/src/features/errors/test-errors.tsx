@@ -50,21 +50,21 @@ function TestErrors() {
 
 function handleNotFound() {
   client
-    .get(`/api/error/not-found`)
+    .get(`/api/errors/not-found`)
     .notFound((error) => toast.error(`Not Found: ${error.message}`))
     .res(console.log);
 }
 
 function handleBadRequest() {
   client
-    .get(`/api/error/bad-request`)
+    .get(`/api/errors/bad-request`)
     .badRequest((error) => toast.error(`Bad Request: ${error.message}`))
     .res(console.log);
 }
 
 function handleServerError() {
   client
-    .get(`/api/error/server-error`)
+    .get(`/api/errors/server-error`)
     .internalError((error) => {
       toast.error(
         `Server Error: ${
@@ -77,7 +77,7 @@ function handleServerError() {
 
 function handleUnauthorised() {
   client
-    .get(`/api/error/unauthorised`)
+    .get(`/api/errors/unauthorised`)
     .unauthorized((error) => toast.error(`Unauthorised: ${error.message}`))
     .res(console.log);
 }

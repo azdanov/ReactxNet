@@ -23,7 +23,7 @@ public class IsHostRequirementHandler : AuthorizationHandler<IsHostRequirement>
         if (userId == null) return;
 
         var inputId = _httpContextAccessor.HttpContext?.Request.RouteValues
-            .SingleOrDefault(x => x.Key == "id").Value?.ToString();
+            .FirstOrDefault(x => x.Key == "id").Value?.ToString();
         var activityId = inputId != null ? Guid.Parse(inputId) : Guid.Empty;
 
         var attendee = await _dbContext.ActivityAttendees

@@ -9,4 +9,6 @@ public sealed class User : IdentityUser
     public override string Email { get; set; } = null!;
     public ICollection<ActivityAttendee> Activities { get; set; } = new List<ActivityAttendee>();
     public string? Bio { get; set; }
+
+    public ICollection<Photo> Photos { get; set; } = new List<Photo>();
 }

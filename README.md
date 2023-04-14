@@ -8,12 +8,13 @@ In the project a user can manage their activities or join other users' activitie
 By default SQLite is used for local development. To use a different database, change the connection string in `appsettings.Development.json`.
 Swagger is enabled by default, and can be used to explore the API.
 
-### Install
+### Setup
 
 - .NET 7 SDK: https://dotnet.microsoft.com/download/dotnet/7.0
 - Node.js LTS version: https://nodejs.org/en/
 - Pnpm package manager: https://pnpm.io/installation
 - .NET EF Core tools: `dotnet tool install --global dotnet-ef`
+- `cp ./API/.env.example ./API/.env` and update the values
 
 ### Run
 
