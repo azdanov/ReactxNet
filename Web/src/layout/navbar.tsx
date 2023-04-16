@@ -55,7 +55,7 @@ function Navbar() {
               <Dropdown.Menu>
                 <Dropdown.Item
                   as={NavLink}
-                  to={`/profile/${userStore.user?.username}`}
+                  to={`/profiles/${userStore.user?.username}`}
                   text="My profile"
                   icon="user"
                 />

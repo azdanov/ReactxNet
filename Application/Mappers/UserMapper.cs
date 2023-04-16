@@ -5,7 +5,7 @@ using Riok.Mapperly.Abstractions;
 namespace Application.Mappers;
 
 [Mapper]
-internal static class UserMapper
+internal static partial class UserMapper
 {
     public static IQueryable<ProfileDto> ProjectToProfileDto(this IQueryable<User> userQuery)
     {

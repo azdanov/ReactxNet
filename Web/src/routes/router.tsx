@@ -7,6 +7,7 @@ import ActivityForm from "../features/activities/form/activity-form";
 import NotFound from "../features/errors/not-found";
 import TestErrors from "../features/errors/test-errors";
 import HomePage from "../features/home/home-page";
+import ProfilePage from "../features/profiles/profile-page";
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +40,16 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        path: "/errors",
+        path: "profiles",
+        children: [
+          {
+            path: ":username",
+            element: <ProfilePage />,
+          },
+        ],
+      },
+      {
+        path: "errors",
         children: [
           {
             path: "",

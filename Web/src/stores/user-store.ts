@@ -72,6 +72,12 @@ class UserStore {
     this.user = undefined;
   }
 
+  setImage(url: string) {
+    if (this.user) {
+      this.user.image = url;
+    }
+  }
+
   private setUser(user: User) {
     this.user = user;
   }
