@@ -23,8 +23,8 @@ function ProfilePage() {
   return (
     <Grid>
       <Grid.Column width="16">
-        <ProfileHeader profile={profileStore.profile} />
-        <ProfileContent profile={profileStore.profile} />
+        <ProfileHeader />
+        <ProfileContent />
       </Grid.Column>
     </Grid>
   );

@@ -2,7 +2,7 @@
 
 import client from "../api/client";
 import { Photo } from "../models/photo";
-import { Profile } from "../models/profile";
+import { Profile, ProfileUpdateFormValues } from "../models/profile";
 import { store } from "./store";
 
 class ProfileStore {
@@ -88,6 +88,22 @@ class ProfileStore {
           this.profile.photos = this.profile.photos.filter(
             (a) => a.id !== photo.id
           );
+        }
+      });
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async updateProfile(values: ProfileUpdateFormValues) {
+    this.loading = true;
+
+    try {
+      await client.put(values, "/api/profiles").res();
+      runInAction(() => {
+        if (this.profile) {
+          this.profile.displayName = values.displayName;
+          this.profile.bio = values.bio;
         }
       });
     } finally {

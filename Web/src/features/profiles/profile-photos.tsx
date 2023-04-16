@@ -1,23 +1,20 @@
 ﻿import { observer } from "mobx-react-lite";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button, Card, Grid, Header, Image, Tab } from "semantic-ui-react";
 
 import PhotoUpload from "../../common/photo/photo-upload";
 import { Photo } from "../../models/photo";
-import { Profile } from "../../models/profile";
 import { useStore } from "../../stores/store";
 
-interface Props {
-  profile: Profile;
-}
-
-function ProfilePhotos({ profile }: Props) {
+function ProfilePhotos() {
   const { profileStore } = useStore();
   const [addPhotoMode, setAddPhotoMode] = useState(false);
 
   function handlePhotoUpload(file: Blob) {
     profileStore.uploadPhoto(file).finally(() => setAddPhotoMode(false));
   }
+
+  if (!profileStore.profile) return <h2>Problem loading photos...</h2>;
 
   return (
     <Tab.Pane>
@@ -28,7 +25,7 @@ function ProfilePhotos({ profile }: Props) {
             <Button
               basic
               content={addPhotoMode ? "Cancel" : "Add Photo"}
-              onClick={() => setAddPhotoMode(!addPhotoMode)}
+              onClick={() => setAddPhotoMode((previous) => !previous)}
             />
           </Header>
         </Grid.Column>
@@ -40,7 +37,7 @@ function ProfilePhotos({ profile }: Props) {
             />
           ) : (
             <Card.Group itemsPerRow={5}>
-              {profile.photos?.map((photo) => (
+              {profileStore.profile.photos.map((photo) => (
                 <Card key={photo.id}>
                   <Image src={photo.url} />
                   <PhotoButtons photo={photo} />
@@ -66,8 +63,9 @@ const PhotoButtons = observer(function Buttons({ photo }: { photo: Photo }) {
           <Button
             loading={mainLoading}
             basic
-            color="green"
+            positive
             content="Main"
+            style={{ borderTopLeftRadius: 0, borderTop: "none" }}
             onClick={() => {
               setMainLoading(true);
               profileStore
@@ -81,7 +79,8 @@ const PhotoButtons = observer(function Buttons({ photo }: { photo: Photo }) {
             disabled={photo.isMain}
             basic
             icon="trash"
-            color="red"
+            negative
+            style={{ borderTopRightRadius: 0 }}
             onClick={() => {
               setDeleteLoading(true);
               profileStore
@@ -94,4 +93,5 @@ const PhotoButtons = observer(function Buttons({ photo }: { photo: Photo }) {
     </>
   );
 });
+
 export default observer(ProfilePhotos);

@@ -11,22 +11,26 @@ import {
 } from "semantic-ui-react";
 
 import user from "../../assets/user.png";
-import { Profile } from "../../models/profile";
+import { useStore } from "../../stores/store";
 
-interface Props {
-  profile: Profile;
-}
+function ProfileHeader() {
+  const { profileStore } = useStore();
 
-function ProfileHeader({ profile }: Props) {
+  if (!profileStore.profile) return <h2>Problem loading header...</h2>;
+
   return (
     <Segment>
       <Grid>
         <Grid.Column width={12}>
           <Item.Group>
             <Item>
-              <Item.Image avatar size="small" src={profile.image || user} />
+              <Item.Image
+                avatar
+                size="small"
+                src={profileStore.profile.image || user}
+              />
               <Item.Content verticalAlign="middle">
-                <Header as="h1" content={profile.displayName} />
+                <Header as="h1" content={profileStore.profile.displayName} />
               </Item.Content>
             </Item>
           </Item.Group>

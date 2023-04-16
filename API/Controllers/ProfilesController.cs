@@ -1,4 +1,5 @@
 ﻿using API.Mappers;
+using API.Requests;
 using API.Responses;
 using Application.Profiles.Queries;
 using Mediator;
@@ -27,5 +28,17 @@ public class ProfilesController : ControllerBase
         if (!profile.IsSuccess) return NotFound();
 
         return Ok(ProfileMapper.MapToProfileResponse(profile.Value));
+    }
+
+    [HttpPut]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<ActionResult<ProfileResponse>> UpdateProfile([FromBody] UpdateProfileRequest request)
+    {
+        var profile = await _mediator.Send(ProfileMapper.MapToUpdateProfileCommand(request));
+        if (!profile.IsSuccess) return BadRequest(profile.Error);
+
+        return NoContent();
     }
 }

@@ -7,3 +7,5 @@ export interface Profile {
   image?: string;
   photos: Photo[];
 }
+
+export type ProfileUpdateFormValues = Pick<Profile, "displayName" | "bio">;
