@@ -18,7 +18,10 @@ function ActivityDetails() {
     if (id) {
       activityStore.loadActivity(id, controller).catch(console.error);
     }
-    return () => controller.abort();
+    return () => {
+      activityStore.clearSelectedActivity();
+      controller.abort();
+    };
   }, [activityStore, id]);
 
   return activityStore.loadingInitial || !activityStore.selectedActivity ? (
@@ -28,7 +31,7 @@ function ActivityDetails() {
       <Grid.Column width={10}>
         <ActivityDetailsHeader activity={activityStore.selectedActivity} />
         <ActivityDetailsInfo activity={activityStore.selectedActivity} />
-        <ActivityDetailsChat />
+        <ActivityDetailsChat activityId={activityStore.selectedActivity.id} />
       </Grid.Column>
       <Grid.Column width={6}>
         <ActivityDetailsSidebar activity={activityStore.selectedActivity} />

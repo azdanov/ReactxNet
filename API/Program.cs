@@ -1,6 +1,7 @@
 using API.Converters;
 using API.Extensions;
 using API.Security;
+using API.SignalR;
 using API.Swagger;
 using Application.Extensions;
 using Application.Interfaces;
@@ -29,6 +30,7 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+builder.Services.AddSignalR();
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
@@ -52,6 +54,7 @@ app.UseCors(corsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ChatHub>("/hubs/chat");
 
 using var scope = app.Services.CreateScope();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();

@@ -108,6 +108,10 @@ class ActivityStore {
     for (const activity of activities) this.setActivity(activity);
   }
 
+  clearSelectedActivity() {
+    this.selectedActivity = undefined;
+  }
+
   private setSelectedActivity(activity?: Activity) {
     this.selectedActivity = activity;
   }
