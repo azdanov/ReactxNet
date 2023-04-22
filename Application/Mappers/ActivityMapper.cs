@@ -10,7 +10,8 @@ internal static partial class ActivityMapper
 {
     public static partial void ActivityDtoToActivity(EditActivityCommand activityCommand, Activity activity);
 
-    public static IQueryable<ActivityDto> ProjectToActivityDto(this IQueryable<Activity> activityQuery)
+    public static IQueryable<ActivityDto> ProjectToActivityDto(this IQueryable<Activity> activityQuery,
+        string? currentUsername = default)
     {
         return activityQuery.Select(activity => new ActivityDto
         {
@@ -31,6 +32,9 @@ internal static partial class ActivityMapper
                     Username = activityAttendee.User.UserName,
                     DisplayName = activityAttendee.User.DisplayName,
                     Bio = activityAttendee.User.Bio,
+                    Following = activityAttendee.User.Followers.Any(f => f.Source.UserName == currentUsername),
+                    FollowersCount = activityAttendee.User.Followers.Count,
+                    FollowingCount = activityAttendee.User.Followings.Count,
                     Image = activityAttendee.User.Photos.FirstOrDefault(x => x.IsMain) == null
                         ? null
                         : activityAttendee.User.Photos.FirstOrDefault(x => x.IsMain)!.Url

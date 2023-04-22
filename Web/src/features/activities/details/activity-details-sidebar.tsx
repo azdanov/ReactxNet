@@ -44,7 +44,14 @@ function ActivityDetailsSidebar({ activity }: Props) {
                   </Link>
                 </Item.Header>
                 <Item.Extra style={{ marginTop: "0.1em" }}>
-                  <Label size="tiny" color="orange" content="Following" basic />
+                  {attendee.following && (
+                    <Label
+                      size="tiny"
+                      color="orange"
+                      content="Following"
+                      basic
+                    />
+                  )}
                 </Item.Extra>
               </Item.Content>
             </Item>

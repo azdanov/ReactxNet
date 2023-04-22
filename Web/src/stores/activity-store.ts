@@ -100,6 +100,19 @@ class ActivityStore {
       .res();
   }
 
+  updateAttendeeFollowing(username: string) {
+    for (const [, activity] of this.activitiesMap) {
+      for (const attendee of activity.attendees) {
+        if (attendee.username === username) {
+          attendee.following
+            ? attendee.followersCount--
+            : attendee.followersCount++;
+          attendee.following = !attendee.following;
+        }
+      }
+    }
+  }
+
   setLoadingInitial(loading: boolean) {
     this.loadingInitial = loading;
   }

@@ -21,6 +21,9 @@ function ActivityListItemAttendee({ attendees }: Props) {
             <List.Item as={Link} to={`/profiles/${attendee.username}`}>
               <Image
                 size="mini"
+                style={
+                  attendee.following ? { outline: "2px solid #f2711c" } : {}
+                }
                 src={attendee.image || user}
                 alt="user"
                 avatar

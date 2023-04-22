@@ -5,6 +5,7 @@ import { Card, Icon, Image } from "semantic-ui-react";
 
 import user from "../../assets/user.png";
 import { ActivityAttendee } from "../../models/activity";
+import ProfileFollowButton from "./profile-follow-button";
 
 interface Props {
   profile: ActivityAttendee;
@@ -22,8 +23,9 @@ function ProfileCard({ profile }: Props) {
       </Card.Content>
       <Card.Content extra>
         <Icon name="user" />
-        20 followers
+        {profile.followersCount} followers
       </Card.Content>
+      <ProfileFollowButton profile={profile} />
     </Card>
   );
 }

@@ -2,6 +2,7 @@
 import { Tab } from "semantic-ui-react";
 
 import ProfileAbout from "./profile-about";
+import ProfileFollowings from "./profile-followings";
 import ProfilePhotos from "./profile-photos";
 
 function ProfileContent() {
@@ -12,16 +13,16 @@ function ProfileContent() {
       render: () => <ProfilePhotos />,
     },
     {
-      menuItem: "Activities",
-      render: () => <Tab.Pane>Activities content</Tab.Pane>,
+      menuItem: "Events",
+      render: () => <Tab.Pane>Events content</Tab.Pane>,
     },
     {
       menuItem: "Followers",
-      render: () => <Tab.Pane>Followers content</Tab.Pane>,
+      render: () => <ProfileFollowings followers />,
     },
     {
       menuItem: "Following",
-      render: () => <Tab.Pane>Following content</Tab.Pane>,
+      render: () => <ProfileFollowings />,
     },
   ];
 

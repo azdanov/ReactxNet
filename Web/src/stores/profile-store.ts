@@ -10,6 +10,8 @@ class ProfileStore {
   loadingProfile = false;
   uploading = false;
   loading = false;
+  followings: Profile[] = [];
+  loadingFollowings = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -108,6 +110,62 @@ class ProfileStore {
       });
     } finally {
       this.loading = false;
+    }
+  }
+
+  async updateFollowing(username: string, following: boolean) {
+    this.loading = true;
+    try {
+      await client.url(`/api/profiles/${username}/followings`).post().res();
+      store.activityStore.updateAttendeeFollowing(username);
+      runInAction(() => {
+        if (this.profile) {
+          if (
+            this.profile.username !== store.userStore.user?.username &&
+            this.profile.username === username
+          ) {
+            following
+              ? this.profile.followersCount++
+              : this.profile.followersCount--;
+            this.profile.following = !this.profile.following;
+          }
+          if (this.profile.username === store.userStore.user?.username) {
+            following
+              ? this.profile.followingCount++
+              : this.profile.followingCount--;
+          }
+        }
+
+        for (const profile of this.followings) {
+          if (profile.username === username) {
+            profile.following
+              ? profile.followersCount--
+              : profile.followersCount++;
+            profile.following = !profile.following;
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      runInAction(() => (this.loading = false));
+    }
+  }
+
+  async loadFollowings(predicate: string) {
+    this.loadingFollowings = true;
+    try {
+      const followings = await client
+        .query({ predicate })
+        .get(`/api/profiles/${this.profile!.username}/followings`)
+        .json<Profile[]>();
+      runInAction(() => {
+        this.followings = followings;
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      runInAction(() => (this.loadingFollowings = false));
     }
   }
 }
