@@ -26,7 +26,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(corsPolicy,
-        policy => { policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5173"); });
+        policy =>
+        {
+            policy.AllowAnyHeader().AllowAnyMethod().WithExposedHeaders(HttpExtensions.Pagination)
+                .WithOrigins("http://localhost:5173");
+        });
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();

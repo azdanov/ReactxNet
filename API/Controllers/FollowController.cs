@@ -29,9 +29,9 @@ public class FollowController : ControllerBase
 
     [HttpGet("{username}/followings")]
     public async Task<ActionResult<IEnumerable<ProfileDto>>> GetFollowings([FromRoute] string username,
-        [FromQuery] string predicate)
+        [FromQuery] string filter)
     {
-        var result = await _mediator.Send(new ListFollowersCommand(predicate, username));
+        var result = await _mediator.Send(new ListFollowersCommand(filter, username));
 
         return result.IsSuccess ? Ok(result.Value) : NotFound();
     }

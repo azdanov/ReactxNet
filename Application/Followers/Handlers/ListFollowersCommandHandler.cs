@@ -25,7 +25,7 @@ public class ListFollowersCommandHandler : ICommandHandler<ListFollowersCommand,
     {
         var profiles = new List<ProfileDto>();
 
-        switch (request.Predicate)
+        switch (request.Filter)
         {
             case "followers":
                 profiles = await _context.UserFollowings

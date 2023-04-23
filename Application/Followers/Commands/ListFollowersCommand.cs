@@ -5,6 +5,6 @@ using Mediator;
 namespace Application.Followers.Commands;
 
 public record ListFollowersCommand(
-    string Predicate,
+    string Filter,
     string Username
 ) : ICommand<Result<List<ProfileDto>>>;

@@ -3,6 +3,7 @@ using API.Extensions;
 using API.Mappers;
 using API.Requests;
 using API.Responses;
+using Application.Activities;
 using Application.Activities.Commands;
 using Application.Activities.Queries;
 using FluentValidation;
@@ -34,11 +35,15 @@ public class ActivitiesController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<IEnumerable<ActivityResponse>>> GetActivities(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<ActivityResponse>>> GetActivities([FromQuery] ActivityParams param,
+        CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetActivitiesQuery(), cancellationToken);
+        var result = await _mediator.Send(new GetActivitiesQuery(param), cancellationToken);
+        if (!result.IsSuccess) return BadRequest(result.Error);
 
-        return ActivityMapper.MapToActivityResponseList(result.Value!);
+        Response.AddPaginationHeader(result.Value.CurrentPage, result.Value.PageSize, result.Value.TotalCount,
+            result.Value.TotalPages);
+        return ActivityMapper.MapToActivityResponseList(result.Value);
     }
 
     [Authorize]

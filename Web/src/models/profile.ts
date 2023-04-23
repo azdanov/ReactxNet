@@ -13,7 +13,14 @@ export interface Profile {
 
 export type ProfileUpdateFormValues = Pick<Profile, "displayName" | "bio">;
 
-export enum FollowersPredicate {
+export enum FollowersFilter {
   Followers = "followers",
   Following = "following",
+}
+
+export interface UserActivity {
+  id: string;
+  title: string;
+  category: string;
+  date: Date;
 }

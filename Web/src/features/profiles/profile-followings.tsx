@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Card, Grid, Header, Tab } from "semantic-ui-react";
 
-import { FollowersPredicate } from "../../models/profile";
+import { FollowersFilter } from "../../models/profile";
 import { useStore } from "../../stores/store";
 import ProfileCard from "./profile-card";
 
@@ -11,9 +11,9 @@ function ProfileFollowings({ followers }: { followers?: boolean }) {
 
   useEffect(() => {
     if (followers) {
-      profileStore.loadFollowings(FollowersPredicate.Followers);
+      profileStore.loadFollowings(FollowersFilter.Followers);
     } else {
-      profileStore.loadFollowings(FollowersPredicate.Following);
+      profileStore.loadFollowings(FollowersFilter.Following);
     }
   }, [followers, profileStore]);
 

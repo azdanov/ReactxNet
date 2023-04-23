@@ -2,7 +2,11 @@
 
 import client from "../api/client";
 import { Photo } from "../models/photo";
-import { Profile, ProfileUpdateFormValues } from "../models/profile";
+import {
+  Profile,
+  ProfileUpdateFormValues,
+  UserActivity,
+} from "../models/profile";
 import { store } from "./store";
 
 class ProfileStore {
@@ -12,6 +16,8 @@ class ProfileStore {
   loading = false;
   followings: Profile[] = [];
   loadingFollowings = false;
+  userActivities: UserActivity[] = [];
+  loadingActivities = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -152,11 +158,11 @@ class ProfileStore {
     }
   }
 
-  async loadFollowings(predicate: string) {
+  async loadFollowings(filter: string) {
     this.loadingFollowings = true;
     try {
       const followings = await client
-        .query({ predicate })
+        .query({ filter })
         .get(`/api/profiles/${this.profile!.username}/followings`)
         .json<Profile[]>();
       runInAction(() => {
@@ -166,6 +172,25 @@ class ProfileStore {
       console.log(error);
     } finally {
       runInAction(() => (this.loadingFollowings = false));
+    }
+  }
+
+  async loadUserActivities(username: string, filter?: string) {
+    this.loadingActivities = true;
+    try {
+      const activities = await client
+        .query({ filter })
+        .get(`/api/profiles/${username}/activities`)
+        .json<UserActivity[]>();
+      runInAction(() => {
+        this.userActivities = activities;
+        this.loadingActivities = false;
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => {
+        this.loadingActivities = false;
+      });
     }
   }
 }

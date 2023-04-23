@@ -41,4 +41,13 @@ public class ProfilesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("{username}/activities")]
+    public async Task<IActionResult> GetUserActivities([FromRoute] string username, [FromQuery] string filter)
+    {
+        var result = await _mediator.Send(new GetProfileActivities(username, filter));
+        if (!result.IsSuccess) return NotFound();
+
+        return Ok(result.Value.Select(ProfileMapper.MapToUserActivityResponse));
+    }
 }

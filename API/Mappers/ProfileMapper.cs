@@ -12,4 +12,6 @@ internal static partial class ProfileMapper
     public static partial ProfileResponse MapToProfileResponse(ProfileDto profile);
 
     public static partial UpdateProfileCommand MapToUpdateProfileCommand(UpdateProfileRequest request);
+
+    public static partial UserActivityResponse MapToUserActivityResponse(UserActivityDto userActivity);
 }

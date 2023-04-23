@@ -71,7 +71,8 @@
         "allowList": {
           "Ref": true,
           "Props": true,
-          "props": true
+          "props": true,
+          "Params": true
         }
       }
     ],
