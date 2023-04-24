@@ -1,7 +1,7 @@
 ﻿import { observer } from "mobx-react-lite";
 import { useEffect, useState } from "react";
-import InfiniteScroll, { InfiniteScroll } from "react-infinite-scroller";
-import { Grid, Loader } from "semantic-ui-react";
+import InfiniteScroll from "react-infinite-scroller";
+import { Button, Grid } from "semantic-ui-react";
 
 import { PagingParams } from "../../../models/pagination";
 import { useStore } from "../../../stores/store";
@@ -36,26 +36,42 @@ function ActivityDashboard() {
             <ActivityListItemPlaceholder />
           </>
         ) : (
-          <InfiniteScroll
-            pageStart={0}
-            loadMore={handleGetNext}
-            hasMore={
-              !loadingNext &&
-              activityStore.pagination &&
-              activityStore.pagination.currentPage <
-                activityStore.pagination.totalPages
-            }
-            initialLoad={false}
-          >
-            <ActivityList />
-          </InfiniteScroll>
+          <>
+            <InfiniteScroll
+              pageStart={0}
+              loadMore={handleGetNext}
+              hasMore={
+                !loadingNext &&
+                activityStore.pagination &&
+                activityStore.pagination.currentPage <
+                  activityStore.pagination.totalPages
+              }
+              initialLoad={false}
+            >
+              <ActivityList />
+            </InfiniteScroll>
+          </>
         )}
       </Grid.Column>
       <Grid.Column width={6}>
         <ActivityFilters />
       </Grid.Column>
       <Grid.Column width="10">
-        <Loader active={loadingNext} />
+        <Button
+          floated="right"
+          content="More activities"
+          onClick={handleGetNext}
+          secondary
+          compact
+          disabled={
+            activityStore.loadingInitial ||
+            loadingNext ||
+            (activityStore.pagination &&
+              activityStore.pagination.currentPage >=
+                activityStore.pagination.totalPages)
+          }
+          loading={loadingNext}
+        />
       </Grid.Column>
     </Grid>
   );

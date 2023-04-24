@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
+    "build:api": "vite build --emptyOutDir --outDir ../API/wwwroot",
     "preview": "vite preview",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
+    "lint": "tsc && eslint --ext .js,.jsx,.ts,.tsx .",
     "prettier": "prettier --write ."
   },
   "browserslist": [

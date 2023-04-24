@@ -51,7 +51,7 @@ function ActivityForm() {
   }, [id, activityStore, setInitialActivity]);
 
   function handleSubmit(activity: ActivityFormValues) {
-    let submitPromise: Promise<ActivityFormValues>;
+    let submitPromise: Promise<void>;
     if (activity.id.length > 0) {
       submitPromise = activityStore.updateActivity(activity);
     } else {

@@ -23,15 +23,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(corsPolicy,
-        policy =>
-        {
-            policy.AllowAnyHeader().AllowAnyMethod().WithExposedHeaders(HttpExtensions.Pagination)
-                .WithOrigins("http://localhost:5173");
-        });
-});
+builder.Services.AddCors(options => { options.AddPolicy(corsPolicy, _ => { }); });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddSignalR();
@@ -57,8 +49,16 @@ app.UseHttpsRedirection();
 app.UseCors(corsPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.MapHub<ChatHub>("/hubs/chat");
+
+if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "index.html")))
+{
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+    app.MapFallbackToController("Index", "Fallback");
+}
 
 using var scope = app.Services.CreateScope();
 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();

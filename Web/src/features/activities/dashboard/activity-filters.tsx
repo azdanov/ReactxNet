@@ -1,5 +1,6 @@
 ﻿import { observer } from "mobx-react-lite";
-import Calendar, { Calendar } from "react-calendar";
+// eslint-disable-next-line import/no-named-as-default
+import Calendar from "react-calendar";
 import { Header, Menu } from "semantic-ui-react";
 
 import { useStore } from "../../../stores/store";

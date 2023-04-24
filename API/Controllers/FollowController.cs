@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using Application.Followers.Commands;
+﻿using Application.Followers.Commands;
 using Application.Profiles.Dto;
 using Mediator;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +7,6 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/profiles")]
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces(MediaTypeNames.Application.Json)]
 public class FollowController : ControllerBase
 {
     private readonly IMediator _mediator;

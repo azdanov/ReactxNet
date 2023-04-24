@@ -43,6 +43,8 @@ public class ProfilesController : ControllerBase
     }
 
     [HttpGet("{username}/activities")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserActivities([FromRoute] string username, [FromQuery] string filter)
     {
         var result = await _mediator.Send(new GetProfileActivities(username, filter));

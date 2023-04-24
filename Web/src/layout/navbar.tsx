@@ -34,24 +34,32 @@ function Navbar() {
               ReactxNet
             </Header>
           </Menu.Item>
-          <Menu.Item as={NavLink} to="/activities" name="Activities" />
+          {userStore.isLoggedIn && (
+            <Menu.Item as={NavLink} to="/activities" name="Activities" />
+          )}
           <Menu.Item as={NavLink} to="/errors" name="Errors" />
-          <Menu.Item>
-            <Button
-              as={NavLink}
-              to="/activities/create"
-              basic
-              inverted
-              content="Create Activity"
-            />
-          </Menu.Item>
-          <Menu.Item position="right">
+          {userStore.isLoggedIn && (
+            <Menu.Item>
+              <Button
+                as={NavLink}
+                to="/activities/create"
+                basic
+                inverted
+                content="Create Activity"
+              />
+            </Menu.Item>
+          )}
+          <Menu.Item disabled={!userStore.isLoggedIn} position="right">
             <Image
               src={userStore.user?.image || user}
               avatar
               style={{ marginRight: "0.5em" }}
             />
-            <Dropdown pointing="top left" text={userStore.user?.displayName}>
+            <Dropdown
+              disabled={!userStore.isLoggedIn}
+              pointing="top left"
+              text={userStore.user?.displayName}
+            >
               <Dropdown.Menu>
                 <Dropdown.Item
                   as={NavLink}

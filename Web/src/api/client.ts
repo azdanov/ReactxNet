@@ -8,15 +8,23 @@ import ProgressAddon from "wretch/addons/progress";
 // eslint-disable-next-line import/no-named-as-default
 import QueryStringAddon from "wretch/addons/queryString";
 import { delay } from "wretch/middlewares";
+import { ConfiguredMiddleware } from "wretch/types";
 
 import { store } from "../stores/store";
+
+const middlewares: ConfiguredMiddleware[] = [];
+
+if (import.meta.env.DEV) {
+  /* Simulate real network */
+  middlewares.push(delay(random(300, 1000)));
+}
 
 const client = wretch()
   .addon(AbortAddon())
   .addon(ProgressAddon())
   .addon(FormDataAddon)
   .addon(QueryStringAddon)
-  .middlewares([/* Simulate slow network */ delay(random(300, 1000))])
+  .middlewares(middlewares)
   .defer((request) => {
     if (store.userStore.token) {
       return request.auth(`Bearer ${store.userStore.token}`);
@@ -37,4 +45,5 @@ const client = wretch()
     toast.error(error.json.title);
     throw error;
   });
+
 export default client;

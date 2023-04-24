@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using API.Requests;
 using API.Responses;
 using API.Services;
@@ -13,8 +12,6 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/accounts")]
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces(MediaTypeNames.Application.Json)]
 public class AccountsController : ControllerBase
 {
     private readonly ITokenService _tokenService;

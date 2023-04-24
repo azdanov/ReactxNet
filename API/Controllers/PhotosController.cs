@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using API.Mappers;
+﻿using API.Mappers;
 using API.Requests;
 using API.Responses;
 using Application.Photos.Commands;
@@ -11,7 +10,6 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/photos")]
-[Produces(MediaTypeNames.Application.Json)]
 public class PhotosController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -23,7 +21,6 @@ public class PhotosController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    [Consumes("multipart/form-data")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -1,5 +1,4 @@
-﻿using System.Net.Mime;
-using API.Extensions;
+﻿using API.Extensions;
 using API.Mappers;
 using API.Requests;
 using API.Responses;
@@ -15,8 +14,6 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/activities")]
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces(MediaTypeNames.Application.Json)]
 public class ActivitiesController : ControllerBase
 {
     private readonly IValidator<CreateActivityCommand> _createActivityValidator;
@@ -32,7 +29,7 @@ public class ActivitiesController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet]
+    [HttpGet("")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<IEnumerable<ActivityResponse>>> GetActivities([FromQuery] ActivityParams param,
@@ -61,7 +58,7 @@ public class ActivitiesController : ControllerBase
     }
 
     [Authorize("IsActivityHost")]
-    [HttpPost]
+    [HttpPost("")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]

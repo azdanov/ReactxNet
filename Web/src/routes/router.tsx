@@ -8,6 +8,7 @@ import NotFound from "../features/errors/not-found";
 import TestErrors from "../features/errors/test-errors";
 import HomePage from "../features/home/home-page";
 import ProfilePage from "../features/profiles/profile-page";
+import RequireAuth from "./require-auth";
 
 export const router = createBrowserRouter([
   {
@@ -19,32 +20,37 @@ export const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "activities",
+        element: <RequireAuth />,
         children: [
           {
-            path: "",
-            element: <ActivityDashboard />,
+            path: "activities",
+            children: [
+              {
+                path: "",
+                element: <ActivityDashboard />,
+              },
+              {
+                path: ":id",
+                element: <ActivityDetails />,
+              },
+              {
+                path: "create",
+                element: <ActivityForm key="create" />,
+              },
+              {
+                path: "edit/:id",
+                element: <ActivityForm key="edit" />,
+              },
+            ],
           },
           {
-            path: ":id",
-            element: <ActivityDetails />,
-          },
-          {
-            path: "create",
-            element: <ActivityForm key="create" />,
-          },
-          {
-            path: "edit/:id",
-            element: <ActivityForm key="edit" />,
-          },
-        ],
-      },
-      {
-        path: "profiles",
-        children: [
-          {
-            path: ":username",
-            element: <ProfilePage />,
+            path: "profiles",
+            children: [
+              {
+                path: ":username",
+                element: <ProfilePage />,
+              },
+            ],
           },
         ],
       },

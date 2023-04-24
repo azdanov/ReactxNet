@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, ScrollRestoration, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { Container } from "semantic-ui-react";
 
@@ -40,6 +40,7 @@ function App() {
           </Container>
         </>
       )}
+      <ScrollRestoration />
       <ModalContainer />
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
     </>
