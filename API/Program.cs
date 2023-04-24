@@ -44,9 +44,36 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
+else 
+{
+    app.Use(async (context, next) => 
+    {
+        context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000");
+        await next.Invoke();
+    });
+}
 
 app.UseHttpsRedirection();
 app.UseCors(corsPolicy);
+app.UseXContentTypeOptions();
+app.UseReferrerPolicy(options => options.NoReferrer());
+app.UseXXssProtection(options => options.EnabledWithBlockMode());
+app.UseXfo(options => options.Deny());
+app.UseCsp(options =>
+{
+    options.BlockAllMixedContent()
+        .DefaultSources(s => s.Self())
+        .StyleSources(s => s.Self().CustomSources("https://fonts.googleapis.com"))
+        .FontSources(s => s.Self().CustomSources("https://fonts.gstatic.com", "data:"))
+        .ImageSources(s => s.Self().CustomSources("blob:", "https://res.cloudinary.com"))
+        .ScriptSources(s => s.Self().CustomSources("sha256-p7PoC97FO+Lu90RNjGWxhbm13yALSR4xzV8vaDhaQBo=",
+            "sha256-+5XkZFazzJo8n0iOP4ti/cLCMUudTf//Mzkb7xNPXIc="))
+        .FormActions(s => s.Self())
+        .FrameAncestors(s => s.Self())
+        .BaseUris(s => s.Self())
+        .ObjectSources(s => s.Self())
+        .FrameSources(s => s.Self());
+});
 app.UseAuthentication();
 app.UseAuthorization();
 

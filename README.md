@@ -72,15 +72,21 @@ Fly.io is used to deploy the app to production.
 - Set App secrets: `fly secrets set KEY=VALUE`
 - Deploy the app: `fly deploy`
 
-#### Github Actions
+#### GitHub Actions
 
-GitHub Actions are used to build and push the docker image to Docker Hub and deploy the app to fly.io.
+GitHub Actions are used to build and push the docker image to Docker Hub
+and deploy the app to fly.io on every push to repository.
 
 Before using the GitHub Actions, the following secrets should be set in the repository settings:
 
 - `FLY_API_TOKEN`
 - `DOCKERHUB_USERNAME`
 - `DOCKERHUB_TOKEN`
+
+#### Security Headers
+
+The app uses [NWebSec](https://github.com/NWebsec/NWebsec) to set security headers.
+Make sure that all the CSPs are set correctly, and there are no errors in the console.
 
 ### Noteworthy NPM Packages
 
