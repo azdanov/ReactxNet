@@ -8,9 +8,9 @@ In the project, a user can manage their activities or join other users' activiti
 UI is bundled together with the API for convenience, but it should be served via a proper web server,
 e.g. nginx, and behind a reverse proxy in "production".
 
-| <img src="./.github/images/1.png" style="height:300px;"> | <img src="./.github/images/2.png" style="height:300px;"> | <img src="./.github/images/3.png" style="height:300px;"> |
-|----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
-| <img src="./.github/images/4.png" style="height:300px;"> | <img src="./.github/images/5.png" style="height:300px;"> | <img src="./.github/images/6.png" style="height:300px;"> |
+| <img src="./.github/images/1.png"> | <img src="./.github/images/2.png"> | <img src="./.github/images/3.png"> |
+|------------------------------------|------------------------------------|------------------------------------|
+| <img src="./.github/images/4.png"> | <img src="./.github/images/5.png"> | <img src="./.github/images/6.png"> |
 
 ## Setup
 
