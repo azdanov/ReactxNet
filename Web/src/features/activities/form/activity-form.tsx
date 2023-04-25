@@ -115,7 +115,7 @@ function ActivityForm() {
                 dateFormat="EEEE, d MMMM yyyy HH:mm"
               />
               <Header content="Location" sub color="blue" />
-              <TextInput label="City" placeholder="City" name="city" />
+              <TextInput placeholder="City" name="city" />
               <TextInput placeholder="Venue" name="venue" />
               <Button
                 floated="right"

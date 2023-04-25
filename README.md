@@ -1,10 +1,16 @@
 # ReactxNet
 
-A demo project for a [React](https://react.dev/) with a [.NET API](https://dotnet.microsoft.com/en-us/apps/aspnet/apis). Uses [MobX](https://mobx.js.org/) for state management, and [Semantic UI](https://react.semantic-ui.com/) for components.
+A demo project for a [React](https://react.dev/) with a [.NET API](https://dotnet.microsoft.com/en-us/apps/aspnet/apis).
+Uses [MobX](https://mobx.js.org/) for state management, and [Semantic UI](https://react.semantic-ui.com/) for
+components.
 In the project, a user can manage their activities or join other users' activities.
 
 UI is bundled together with the API for convenience, but it should be served via a proper web server,
 e.g. nginx, and behind a reverse proxy in "production".
+
+| <img src="./.github/images/1.png" style="height:300px;"> | <img src="./.github/images/2.png" style="height:300px;"> | <img src="./.github/images/3.png" style="height:300px;"> |
+|----------------------------------------------------------|----------------------------------------------------------|----------------------------------------------------------|
+| <img src="./.github/images/4.png" style="height:300px;"> | <img src="./.github/images/5.png" style="height:300px;"> | <img src="./.github/images/6.png" style="height:300px;"> |
 
 ## Setup
 
@@ -105,13 +111,15 @@ Make sure that all the CSPs are set correctly, and there are no errors in the co
   for better performance.
 - [Mapperly](https://github.com/riok/mapperly) - A .NET source generator for generating object mappings. No runtime
   reflection. Inspired by MapStruct.
-- [FluentValidation](https://github.com/FluentValidation/FluentValidation) - A validation library for .NET that uses a fluent interface and lambda expressions for building strongly-typed validation rules.
+- [FluentValidation](https://github.com/FluentValidation/FluentValidation) - A validation library for .NET that uses a
+  fluent interface and lambda expressions for building strongly-typed validation rules.
 
 ### EF Core
 
 Project uses EF Core and the migrations are created in the `Persistence` project.
 
-Migrations are [automatically applied](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=vs#apply-migrations-at-runtime)
+Migrations
+are [automatically applied](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=vs#apply-migrations-at-runtime)
 in development when the API is started.
 
 1. Install the EF Core tools: `dotnet tool install --global dotnet-ef`
