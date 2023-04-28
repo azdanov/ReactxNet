@@ -7,11 +7,11 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/profiles")]
-public class FollowController : ControllerBase
+public class ProfilesFollowingsController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public FollowController(IMediator mediator)
+    public ProfilesFollowingsController(IMediator mediator)
     {
         _mediator = mediator;
     }

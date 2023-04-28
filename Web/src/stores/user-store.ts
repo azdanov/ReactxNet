@@ -1,10 +1,11 @@
-﻿import { makeAutoObservable, reaction } from "mobx";
+﻿import { makeAutoObservable, reaction, runInAction } from "mobx";
 
 import client from "../api/client";
 import { User, UserLogin, UserRegister } from "../models/user";
 
 class UserStore {
   user?: User = JSON.parse(localStorage.getItem("user") || "null") as User;
+  refreshTokenTimeout: number | undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -33,9 +34,9 @@ class UserStore {
     const user: User = await client
       .post({ email, password }, "/api/accounts/login")
       .json();
-
     if (user) {
       this.setUser(user);
+      this.startRefreshTokenTimer(user);
     }
   }
 
@@ -51,9 +52,9 @@ class UserStore {
         "/api/accounts/register"
       )
       .json();
-
     if (user) {
       this.setUser(user);
+      this.startRefreshTokenTimer(user);
     }
   }
 
@@ -62,9 +63,9 @@ class UserStore {
       .signal(controller)
       .get("/api/accounts")
       .json();
-
     if (user) {
       this.setUser(user);
+      this.startRefreshTokenTimer(user);
     }
   }
 
@@ -80,6 +81,33 @@ class UserStore {
 
   private setUser(user: User) {
     this.user = user;
+  }
+
+  async refreshToken() {
+    this.stopRefreshTokenTimer();
+    try {
+      const user: User = await client
+        .url("/api/accounts/refresh-token")
+        .post()
+        .json();
+      runInAction(() => (this.user = user));
+      this.startRefreshTokenTimer(user);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  private startRefreshTokenTimer(user: User) {
+    const jwtToken = JSON.parse(atob(user.token.split(".")[1])) as {
+      exp: number;
+    };
+    const expires = new Date(jwtToken.exp * 1000);
+    const timeout = expires.getTime() - Date.now() - 60 * 1000;
+    this.refreshTokenTimeout = setTimeout(() => this.refreshToken(), timeout);
+  }
+
+  private stopRefreshTokenTimer() {
+    clearTimeout(this.refreshTokenTimeout);
   }
 }
 

@@ -44,9 +44,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
-else 
+else
 {
-    app.Use(async (context, next) => 
+    app.Use(async (context, next) =>
     {
         context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000");
         await next.Invoke();

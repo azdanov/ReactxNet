@@ -38,7 +38,14 @@ const client = wretch()
     throw error;
   })
   .catcher(401, (error) => {
-    toast.error(error.json.title);
+    if (
+      error.response.headers
+        .get("WWW-Authenticate")
+        ?.includes('Bearer error="invalid_token"')
+    ) {
+      store.userStore.logout().then();
+      toast.error("Please login again. Your session has expired.");
+    }
     throw error;
   })
   .catcher(500, (error) => {

@@ -36,6 +36,7 @@ public class AccountsController : ControllerBase
         var matches = await _userManager.CheckPasswordAsync(user, request.Password);
         if (!matches) return Unauthorized();
 
+        await SetRefreshToken(user);
         return new UserResponse
         {
             Username = user.UserName,
@@ -76,6 +77,7 @@ public class AccountsController : ControllerBase
             return ValidationProblem();
         }
 
+        await SetRefreshToken(user);
         return new UserResponse
         {
             Username = user.UserName,
@@ -96,6 +98,7 @@ public class AccountsController : ControllerBase
             .FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) return Unauthorized();
 
+        await SetRefreshToken(user);
         return new UserResponse
         {
             Username = user.UserName,
@@ -103,5 +106,54 @@ public class AccountsController : ControllerBase
             Token = _tokenService.CreateToken(user),
             Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
         };
+    }
+
+    [Authorize]
+    [HttpPost("refresh-token")]
+    public async Task<ActionResult<UserResponse>> RefreshToken()
+    {
+        var refreshToken = Request.Cookies["refreshToken"];
+
+        var user = await _userManager.Users
+            .Include(r => r.RefreshTokens)
+            .Include(p => p.Photos)
+            .FirstOrDefaultAsync(x => x.UserName == User.FindFirstValue(ClaimTypes.Name));
+
+        if (user == null) return Unauthorized();
+
+        var oldToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken);
+
+        switch (oldToken)
+        {
+            case { IsActive: false }:
+                return Unauthorized();
+            case not null:
+                oldToken.Revoked = DateTime.UtcNow;
+                break;
+        }
+
+        return new UserResponse
+        {
+            Username = user.UserName,
+            DisplayName = user.DisplayName,
+            Token = _tokenService.CreateToken(user),
+            Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
+        };
+    }
+
+    private async Task SetRefreshToken(User user)
+    {
+        var refreshToken = _tokenService.GenerateRefreshToken();
+
+        user.RefreshTokens.Add(refreshToken);
+        await _userManager.UpdateAsync(user);
+
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTime.UtcNow.AddDays(7)
+        };
+
+        Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
     }
 }
