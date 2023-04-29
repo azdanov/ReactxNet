@@ -12,6 +12,10 @@ e.g. nginx, and behind a reverse proxy in "production".
 |------------------------------------|------------------------------------|------------------------------------|
 | <img src="./.github/images/4.png"> | <img src="./.github/images/5.png"> | <img src="./.github/images/6.png"> |
 
+<small>PS: Some corners were cut to save time and effort,
+e.g. having business logic in a controller or missing validation or not using Mediator pipelines...
+When writing a real-world application such things must be avoided.</small>
+
 ## Setup
 
 - Docker: https://docs.docker.com/get-docker/
